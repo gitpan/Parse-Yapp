@@ -110,7 +110,7 @@ sub _SetOption {
     }
 
         exists($actions{$key})
-    and do &{$actions{$key}}($self,$value);
+    and &{$actions{$key}}($self,$value);
 
     $self->{OPTIONS}{$key}=$value;
 }

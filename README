@@ -10,13 +10,6 @@ COPYRIGHT
 
 IMPORTANT NOTES
 
-This is production release version 1.0 of Parse::Yapp.
-
-As those last month I've had little time to invest in its development
-and it seems pretty stable now, having been in BETA for more than six
-monthes without any bug reports, I decided to pass it in 'production'
-status.
-
 While I'll will maintain and improve it through your comments and bug
 reports, further developments will go in another version numbering
 scheme I haven't choosed yet (probably "a la linux", with even sub-numbers
@@ -29,7 +22,7 @@ criteria.
 
 The Parse::Yapp pod section is the main documentation and it assumes
 you already have a good knowledge of yacc. If not, I suggest the GNU
-Bison manual which is a very good tutorial to LALR parsing and yacc's
+Bison manual which is a very good tutorial to LALR parsing and yacc
 grammar syntax.
 
 The yapp frontend has now its own documentation using either
@@ -40,7 +33,7 @@ Any help on this issue would be very welcome.
 
 DESCRIPTION
 
-This is production release 1.0 of the Parse::Yapp parser generator.
+This is production release 1.0.1 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser
 modules (see the Yapp.pm pod pages for more details) and has
@@ -71,5 +64,4 @@ FEEDBACK
 
 Send feedback, comments and bug reports to:
 
-Francois Desarmenien
-desar@club-internet.fr
+Francois Desarmenien <desar@club-internet.fr>
