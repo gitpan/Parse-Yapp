@@ -16,6 +16,7 @@ use Carp;
 
 my($input,$lexlevel,@lineno,$nberr,$prec,$labelno);
 my($syms,$head,$tail,$token,$term,$nterm,$rules,$precterm,$start,$nullable);
+my($expect);
 
 %}
 
@@ -117,6 +118,7 @@ decl:  '\n'                 #default action
                     $$nterm{$symbol}=undef;    #is a non-terminal
                 }
             }
+    |   EXPECT NUMBER '\n'             { $expect=$_[2][0]; undef }
     |   error '\n'                     { $_[0]->YYErrok }
 ;    
 
@@ -308,6 +310,8 @@ sub _Lexer {
         and return('ASSOC',[ uc($1), $lineno[0] ]);
             $$input=~/\G%(start)/gc
         and return('START',[ undef, $lineno[0] ]);
+            $$input=~/\G%(expect)/gc
+        and return('EXPECT',[ undef, $lineno[0] ]);
             $$input=~/\G%{/gc
         and do {
             my($code);
@@ -325,6 +329,8 @@ sub _Lexer {
         and return('TYPE',[ undef, $lineno[0] ]);
             $$input=~/\G%(union)/gc
         and return('UNION',[ undef, $lineno[0] ]);
+            $$input=~/\G([0-9]+)/gc
+        and return('NUMBER',[ $1, $lineno[0] ]);
 
     }
     else {# In rule section
@@ -449,6 +455,7 @@ sub Parse {
 
     $start="";
     $nullable={};
+    $expect=0;
 
     pos($$input)=0;
 
@@ -459,9 +466,9 @@ sub Parse {
     and _SyntaxError(2,"Errors detected: No output",-1);
 
     @$parsed{ 'HEAD', 'TAIL', 'RULES', 'NTERM', 'TERM',
-              'NULL', 'PREC', 'SYMS',  'START' }
+              'NULL', 'PREC', 'SYMS',  'START', 'EXPECT' }
     =       (  $head,  $tail,  $rules,  $nterm,  $term,
-               $nullable, $precterm, $syms, $start);
+               $nullable, $precterm, $syms, $start, $expect);
 
     undef($input);
     undef($lexlevel);
@@ -482,6 +489,7 @@ sub Parse {
 
     undef($start);
     undef($nullable);
+    undef($expect);
 
     $parsed
 }

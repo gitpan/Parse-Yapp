@@ -93,7 +93,7 @@ it I<error> and will treat it as if it were the I<error> token.
 =item C<Grammar file syntax>
 
 It is very close to yacc's one (in fact, I<Parse::Yapp> should compile
-a I<yacc> grammar without any modification, whereas the opposit
+a clean I<yacc> grammar without any modification, whereas the opposit
 is no true).
 
 It is divided in three sections separated by C<%%>:
@@ -142,6 +142,12 @@ symbol not appearing as a left hand side of a rule is considered to be
 a token.
 Other yacc declarations or constructs such as C<%type> and C<%union> are
 parsed but (almost) ignored.
+
+=item *
+
+C<%expect> followed by a number, suppress warnings about number of Shift/Reduce
+conflicts when both numbers match, a la bison.
+
 
 =item B<The Rule Section> contains your grammar rules:
 
@@ -234,10 +240,26 @@ Two useful methods in error recovery sub
 
     $_[0]->YYCurtok
     $_[0]->YYCurval
+    $_[0]->YYExpect
 
-returns respectivly the current token and its semantic value that made
-the parse fail (they can be used to modify their values, too, but
-know what you do !).
+returns respectivly the current input token that made the parse fail,
+its semantic value (both can be used to modify their values too, but
+know what you do !) and a list which contains the tokens the parser
+expected when the failure occured.
+
+Note that if C<$_[0]-E<gt>YYCurtok> is declared as a C<%nonassoc> token,
+it can be included in C<$_[0]-E<gt>YYExpect> list whenever the input
+try to use it in an associative way. This is not a bug: the token
+IS expected to report an error.
+
+To detect such a thing in your error reporting sub, the following
+example should do the trick:
+
+        grep { $_[0]->YYCurtok eq $_ } $_[0]->YYExpect
+    and do {
+        #Non-associative token used in an associative expression
+    };
+
 
 Accessing semantics values on the left of your reducing rule is done
 through the method

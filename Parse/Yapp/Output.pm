@@ -29,38 +29,9 @@ sub Output {
     my($self)=shift;
     my($package,$standalone)=@_;
     my($head,$states,$rules,$tail,$driver);
-    my($text);
     my($version)=$Parse::Yapp::Driver::VERSION;
     my($datapos);
-
-	$driver='use Parse::Yapp::Driver;';
-
-        defined($package)
-    or $package='Parse::Yapp::Default';
-
-	$head= $self->Head();
-	$rules=$self->RulesTable();
-	$states=$self->DfaTable();
-	$tail= $self->Tail();
-
-		$standalone
-	and	$driver=_CopyDriver();
-
-    $datapos=tell(DATA);
-	while(defined($_=<DATA>)) {
-
-			/<<\$.+>>/
-		and	s/<<(\$.+)>>/$1/ee;
-
-		$text.=$_;
-	}
-    seek(DATA,$datapos,0);
-
-	$text;
-}
-
-1;
- __DATA__
+    my($text)=<<'EOT';
 #########################################################################
 #
 #      This file was generated using Parse::Yapp version <<$version>>.
@@ -94,4 +65,25 @@ sub new {
 }
 
 <<$tail>>
+1;
+EOT
+
+	$driver='use Parse::Yapp::Driver;';
+
+        defined($package)
+    or $package='Parse::Yapp::Default';
+
+	$head= $self->Head();
+	$rules=$self->RulesTable();
+	$states=$self->DfaTable();
+	$tail= $self->Tail();
+
+		$standalone
+	and	$driver=_CopyDriver();
+
+	$text=~s/<<(\$.+)>>/$1/gee;
+
+	$text;
+}
+
 1;

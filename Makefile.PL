@@ -21,6 +21,6 @@ sub MY::postamble {
 YAPPPARSE = Parse/Yapp/Parse.pm
 
 $(YAPPPARSE) :: YappParse.yp
-	$(PERL) yapp.pl -m 'Parse::Yapp::Parse' -o 'Parse/Yapp/Parse.pm' YappParse.yp
+	$(PERL) -I. yapp.pl -m 'Parse::Yapp::Parse' -o 'Parse/Yapp/Parse.pm' YappParse.yp
 EOT
 }

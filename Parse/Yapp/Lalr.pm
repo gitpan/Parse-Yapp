@@ -86,7 +86,7 @@ sub Warnings {
 
 	$text=$self->SUPER::Warnings();
 
-        $nbsr
+        $nbsr != $$self{GRAMMAR}{EXPECT}
     and $text.="$nbsr shift/reduce conflict".($nbsr > 1 ? "s" : "");
 
         $nbrr
@@ -96,7 +96,8 @@ sub Warnings {
         $text.="$nbrr reduce/reduce conflict".($nbrr > 1 ? "s" : "");
     };
 
-        $nbsr+$nbrr
+       (    $nbsr != $$self{GRAMMAR}{EXPECT}
+        or  $nbrr)
     and $text.="\n";
 
     $text;
@@ -836,6 +837,7 @@ sub _SolveConflicts {
                         $$act[0] > 0
                     and do {
                         splice(@$act,0,1);
+                        ++$error;
                         --$k;
                     };
                 }
@@ -850,64 +852,6 @@ sub _SolveConflicts {
                 push(@{$$conflicts{FORCED}{DETAIL}{$stateno}{LIST}},
                     map { [ $term, $_ ] } splice(@$act,1));
             };
-=for nobody 
-
-            while(@$act > 1) {
-                    #if only reduces: keep the first one
-                    $$act[0] < 0
-                and do {
-                    for (splice(@$act,1)) {
-                        ++$$conflicts{FORCED}{TOTAL}[1];
-                        ++$$conflicts{FORCED}{DETAIL}{$stateno}{TOTAL}[1];
-                        push(@{$$conflicts{FORCED}{DETAIL}{$stateno}{LIST}},
-                             [ $term, $_ ]);
-                    }
-                    last;
-                };
-
-                    ref($$grammar{TERM}{$term})
-                and do {
-                    my($assoc,$tprec)=@{$$grammar{TERM}{$term}};
-                    my($ruleno)=-$$act[1];
-                    my($rprec)=&$RulePrec($ruleno);
-
-                        defined($rprec)
-                    and do {
-                            (   $tprec > $rprec
-                             or ($tprec == $rprec and $assoc eq 'RIGHT'))
-                        and do {
-                            push(@{$$conflicts{SOLVED}{$stateno}},
-                                 [ $ruleno, $term, 'shift' ]);
-                            splice(@$act,1,1);
-                            next;
-                        };
-                            ($tprec < $rprec or $assoc eq 'LEFT')
-                        and do {
-                            push(@{$$conflicts{SOLVED}{$stateno}},
-                                 [ $ruleno, $term, 'reduce' ]);
-                            splice(@$act,0,1);
-                            next;
-                        };
-                        push(@{$$conflicts{SOLVED}{$stateno}},
-                             [ $ruleno, $term, 'error' ]);
-                        splice(@$act,0,2);
-                        next;
-                    };
-                };
-
-                #Terminal or rule has no precedence: discard reduces
-                for (splice(@$act,1)) {
-                        ++$$conflicts{FORCED}{TOTAL}[0];
-                        ++$$conflicts{FORCED}{DETAIL}{$stateno}{TOTAL}[0];
-                        push(@{$$conflicts{FORCED}{DETAIL}{$stateno}{LIST}},
-                             [ $term, $_ ]);
-                }
-                last;
-            }
-
-                @$act == 0
-			and	delete($$actions{$term});
-=cut
         }
 
             $nbsr
@@ -948,7 +892,8 @@ sub _SetDefaults {
 
 			$$actions{$term}=$$actions{$term}[0];
 
-                (   $$actions{$term} > 0
+                (   not defined($$actions{$term})
+                 or $$actions{$term} > 0
                  or $nodefault)
             and next;
 

@@ -21,7 +21,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '0.16';
+$VERSION = '0.22';
 $COMPATIBLE = '0.07';
 $FILENAME=__FILE__;
 
@@ -62,17 +62,19 @@ sub new {
 
 sub YYParse {
     my($self)=shift;
+    my($retval);
 
 	_CheckParams( \@params, \%params, \@_, $self );
 
 	if($$self{DEBUG}) {
 		_DBLoad();
-		eval '$self->_DBParse()';#Do not create stab entry on compile
+		$retval = eval '$self->_DBParse()';#Do not create stab entry on compile
+        $@ and die $@;
 	}
 	else {
-		$self->_Parse();
+		$retval = $self->_Parse();
 	}
-
+    $retval
 }
 
 sub YYData {
@@ -151,6 +153,14 @@ sub YYCurval {
     and ${$$self{VALUE}}=$_[0];
     ${$$self{VALUE}};
 }
+
+sub YYExpect {
+    my($self)=shift;
+
+    keys %{$self->{STATES}[$self->{STACK}[-1][0]]{ACTIONS}}
+}
+
+
 
 #################
 # Private stuff #

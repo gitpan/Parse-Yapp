@@ -10,14 +10,17 @@ COPYRIGHT
 
 IMPORTANT NOTES
 
-THIS IS ALPHA SOFTWARE.
+THIS IS BETA SOFTWARE.
 
 Though it has been tested a lot, there are probably bugs in it ;-)
+
+The BETA status does not reflect the quality of the code, but the possible
+changes in the generated parser modules.
 
 I need FEEDBACK for every problem or bug you could encounter so I can fix
 them in the next release. Comments are welcome too.
 But I also need FEEDBACK if you use it and have it work fine so I can step
-to beta and production releases. Just drop me a mail.
+to production releases. Just drop me a mail.
 
 The Parse::Yapp pod section is the main documentation and it assumes
 you already have a good knowledge of yacc. If not, I suggest the GNU
@@ -29,7 +32,7 @@ Any help on this issue would be very welcome.
 
 DESCRIPTION
 
-This is the alpha release 0.16 of the Parse::Yapp parser generator.
+This is the alpha release 0.22 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser
 modules (see the Yapp.pm pod pages for more details) and has

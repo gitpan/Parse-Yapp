@@ -10,7 +10,7 @@ require 5.004;
 
 use Parse::Yapp::Parse;
 
-my($head,$tail,$rules,$nterm,$term,$nullable,$precterm,$syms,$start);
+my($head,$tail,$rules,$nterm,$term,$nullable,$precterm,$syms,$start,$expect);
 my($ufrules,$ufnterm,$reachable);
 
 ###############
@@ -26,9 +26,11 @@ sub new {
 
     my($parser)=new Parse::Yapp::Parse;
 
-        ($head,$tail,$rules,$nterm,$term,$nullable,$precterm,$syms,$start)
+        ($head,$tail,$rules,$nterm,$term,
+         $nullable,$precterm,$syms,$start,$expect)
     =  @{$parser->Parse(@_)}
-        {'HEAD','TAIL','RULES','NTERM','TERM','NULL','PREC','SYMS','START'};
+        {'HEAD','TAIL','RULES','NTERM','TERM',
+         'NULL','PREC','SYMS','START','EXPECT'};
 
     undef($parser);
 
@@ -46,6 +48,7 @@ sub new {
     undef($precterm);
     undef($syms);
     undef($start);
+    undef($expect);
 
     bless($self, $class);
 }
@@ -297,6 +300,7 @@ sub _ReduceGrammar {
 
     $$grammar{HEAD}=$head;
     $$grammar{TAIL}=$tail;
+    $$grammar{EXPECT}=$expect;
 
     $$grammar{TERM}{chr(0)}=undef;
     for my $sym (keys %$term) {

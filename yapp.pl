@@ -14,13 +14,14 @@ use Parse::Yapp;
 
 use strict;
 
-use vars qw ( $opt_m $opt_v $opt_o $opt_h $opt_s );
+use vars qw ( $opt_m $opt_V $opt_v $opt_o $opt_h $opt_s );
 
 sub Usage {
 	my($prog)=(fileparse($0,'\..*'))[0];
 	die <<EOF;
 Usage:
 	$prog [-m module] [-v] [-s] [-o filename] grammar[.yp]
+or	$prog -V
 or	$prog -h
 
     -m module   Give your parser module the name <module>
@@ -31,16 +32,39 @@ or	$prog -h
     -s          Create a standalone module in which the driver is included
 
     -o outfile  Create the file <outfile> for your parser module
-                Default is <grammar>.pm
+                Default is <grammar>.pm or, if -m A::Module::Name is
+                specified, Name.pm
 
-    grammar     The grammar file. If no suffix is given, .yp is added
+    grammar     The grammar file. If no suffix is given, and the file
+                does not exists, .yp is added
+
+    -V          Display current version of Parse::Yapp and gracefully exits
 
     -h          Display this help screen
 EOF
 }
 
-	getopts('hvsm:o:') and not $opt_h and @ARGV == 1
+my($nbargs)=@ARGV;
+
+	getopts('Vhvsm:o:')
 or	Usage;
+
+   (  ($opt_V and $nbargs > 1)
+    or $opt_h)
+and Usage;
+
+	$opt_V
+and do {
+
+    @ARGV == 0 or  Usage;
+
+    print "This is Parse::Yapp version $Parse::Yapp::Driver::VERSION.\n";
+    exit(0);
+
+};
+
+    @ARGV == 1
+or  Usage;
 
 my($filename)=$ARGV[0];
 my($base,$path,$sfx)=fileparse($filename,'\..*');
@@ -67,11 +91,11 @@ and	print STDERR $warnings;
 
 	$opt_v
 and	do {
-	my($output)="$path$base.output";
+	my($output)="$base.output";
 	my($tmp);
 
 		open(OUT,">$output")
-	or	die "Cannot create $path$base.output for writing.\n";
+	or	die "Cannot create $base.output for writing.\n";
 
 		$tmp=$parser->Warnings()
 	and	print	OUT "Warnings:\n---------\n$tmp\n";
@@ -87,11 +111,15 @@ and	do {
 	close(OUT);
 };
 
-my($outfile)="$path$base.pm";
+my($outfile)="$base.pm";
 my($package)="$base";
 
 	$opt_m
-and	$package=$opt_m;
+and	do {
+    $package=$opt_m;
+    $package=~/^(?:(?:[^:]|:(?!:))*::)*(.*)$/;
+    $outfile="$1.pm";
+};
 
 	$opt_o
 and	$outfile=$opt_o;

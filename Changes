@@ -73,3 +73,26 @@ Revision history for Perl extension Yapp.
     - Usage in yapp.pl reflects this new option 
     - Updated Yapp.pm pod to add Standalone Parsers item
 0.16  Sun Oct 25 12:36:05 CET 1998
+    - Output.pm modified not to use DATA handle, which seems broken on windows
+      systems when Parse::Yapp module is untarred and Output.pm hasn't its \n
+      converted to \r\n pairs.
+    - Added the %expect declaration, a la bison
+    - Updated Yapp.pm pod to reflect this new option
+    - The core of Parse::Yapp seems very stable now so I change the status from
+      alpha to beta and jump to version 0.20 directly.
+0.20  Sun Dec 20 16:13:21 CET 1998
+    - Added YYExpect method in Parse/Yapp/Driver.pm
+    - Updated Yapp.pm pod to reflect this new method
+    - Modified Makefile.PL for using current Parse::Yapp version if recompiling
+      Parse/Yapp/Parse.pm from YappParse.yp ( $(PERL) -I. )
+    - Modified yapp.pl to add -V option and make output default to final name
+      of package, if -m option is specified. Usage updated.
+    - Added missing $@ check after eval of debugging driver.
+0.21  Thu Dec 24 18:55:47 CET 1998
+    - Corrected a weird bug in Lalr.pm (_SolveConflicts & _SetDefaults) about
+      shift/reduce conflicts on non-associative tokens
+    - Added a test in base.t to check non-associative conflicts and error
+      token handling
+    - Added some doc to explain YYExpect can include YYCurtok when non-associ-
+      ative errors happen
+0.22  Wed Mar 10 17:03:39 CET 1999

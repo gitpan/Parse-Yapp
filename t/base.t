@@ -75,6 +75,20 @@ B:  'a' | 'b' | 'c' | 'd' ;
 EOT
 , [ 'a', '*', 'b', '*', 'c', '*', 'd' ], "(a*(b*(c*d)))"
 ],
+[ #nonassoc
+<<'EOT'
+%{ my $out; %}
+%nonassoc '+'
+#%left '+'
+%%
+S:      S '+' S { $out }
+    |   'a'
+    |   error { $out="nonassoc" }
+    ;
+%%
+EOT
+, [ 'a' , '+', 'a', '+', 'a' ], "nonassoc"
+],
 );
 
 use Parse::Yapp;
@@ -105,7 +119,7 @@ sub TestIt {
         return;
     };
 
-    $p=new Test(yylex => $lex);
+    $p=new Test(yylex => $lex, yyerror => sub {});
 
     $out=$p->YYParse;
     undef $p;
