@@ -1,0 +1,15 @@
+Changes
+README
+MANIFEST
+Makefile.PL
+Parse/Yapp.pm
+Parse/Yapp/Parse.pm
+Parse/Yapp/Grammar.pm
+Parse/Yapp/Lalr.pm
+Parse/Yapp/Output.pm
+Parse/Yapp/Driver.pm
+YappParse.yp
+yapp.pl
+Calc.yp
+t/base.t
+t/calc.t

@@ -1,0 +1,64 @@
+
+Parse::Yapp - Parse::Yapp  Yet Another Perl Parser compiler
+
+Compiles yacc-like LALR grammars to generate Perl OO parser modules.
+
+COPYRIGHT
+
+(c) 1998 Francois Desarmenien, all rights reserved.
+(see the Copyright section in Yapp.pm for usage and distribution rights)
+
+IMPORTANT NOTES
+
+THIS IS ALPHA SOFTWARE.
+
+Though it has been tested a lot, there are probably bugs in it ;-)
+
+I need FEEDBACK for every problem or bug you could encounter so I can fix
+them in the next release. Comments are welcome too.
+But I also need FEEDBACK if you use it and have it work fine so I can step
+to beta and production releases. Just drop me a mail.
+
+The Parse::Yapp pod section is the main documentation and it assumes
+you already have a good knowledge of yacc. If not, I suggest the GNU
+Bison manual which is a very good tutorial to LALR parsing and yacc's
+grammar syntax.
+
+The documentation is only a draft and should be rewritten (I think).
+Any help on this issue would be very welcome.
+
+DESCRIPTION
+
+This is the alpha release 0.14 of the Parse::Yapp parser generator.
+
+It lets you create Perl OO fully reentrant LALR(1) parser
+modules (see the Yapp.pm pod pages for more details) and has
+been designed to be functionnaly as close as possible to yacc,
+but using the full power of Perl and opened for enhancements.
+
+REQUIREMENTS
+
+Requires perl5.004 or better :)
+
+It is written only in Perl, with standard distribution modules,
+so you don't need any compiler nor special modules.
+
+INSTALLATION
+
+perl Makefile.PL
+make
+make test
+make install
+
+WARRANTY
+
+This software comes with absolutly NO WARRANTY of any kind. 
+I just hope it can be useful.
+
+
+FEEDBACK
+
+Send feedback, comments and bug reports to:
+
+Francois Desarmenien
+desar@club-internet.fr
