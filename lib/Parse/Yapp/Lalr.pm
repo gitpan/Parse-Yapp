@@ -656,12 +656,14 @@ sub _FirstSfx {
         $first|=$first{$$rhs[$pos]};
 
             vec($first,0,1)
-        and do {
-            vec($first,0,1)=0;
-            next;
+        and vec($first,0,1)=0;
+
+            exists($$grammar{NULLABLE}{$$rhs[$pos]})
+        or  do {
+            $firstsfx{$key}=$first;
+            return($first);
         };
-        $firstsfx{$key}=$first;
-        return($first);
+
     }
     vec($first,0,1)=1;
     $firstsfx{$key}=$first;

@@ -236,16 +236,18 @@ All those methods explicitly return I<undef>, for convenience.
 
     YYRECOVERING is done by calling $_[0]->YYRecovering
 
-Three useful methods in error recovery sub
+Four useful methods in error recovery sub
 
     $_[0]->YYCurtok
     $_[0]->YYCurval
     $_[0]->YYExpect
+    $_[0]->YYLexer
 
 return respectivly the current input token that made the parse fail,
 its semantic value (both can be used to modify their values too, but
-know what you do !) and a list which contains the tokens the parser
-expected when the failure occured.
+know what you do ! See I<Error reporting routine> section for an example),
+a list which contains the tokens the parser expected when the failure
+occured and a reference to the lexer routine.
 
 Note that if C<$_[0]-E<gt>YYCurtok> is declared as a C<%nonassoc> token,
 it can be included in C<$_[0]-E<gt>YYExpect> list whenever the input
@@ -375,6 +377,23 @@ If you want one, write it knowing that it is passed as parameter
 the parser object. So you can share information whith the lexer
 routine quite easily.
 
+You can also use the C<$_[0]->YYErrok> method in it, which will
+resume parsing as if no error occured. Of course, as the invalid
+token is still invalid, you're supposed to fix the problem by
+yourself.
+
+The method C<$_[0]->YYLexer> may help you, as it returns a reference
+to the lexer routine, and can be called as
+
+    ($tok,$val)=&{$_[0]->Lexer}
+
+to get the next token and semantic value from the input stream. To
+make them current for the parser, use:
+
+    ($_[0]->YYCurtok, $_[0]->YYCurval) = ($tok, $val)
+
+and know what you're doing...
+
 =item C<Parsing>
 
 Now you've got everything to do the parsing.
@@ -466,7 +485,7 @@ or have any questions related to it, feel free to contact the author.
 
 =head1 AUTHOR
 
-Francois Desarmenien  desar@club-internet.fr
+Francois Desarmenien  francois@fdesar.net
 
 =head1 SEE ALSO
 

@@ -93,6 +93,7 @@ decl:  '\n'                 #default action
                             $lineno);
                         next;
                     };
+                    $$token{$symbol}=$lineno;
                     $$term{$symbol} = [ $_[1][0], $prec ];
                 }
                 ++$prec;

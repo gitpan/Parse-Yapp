@@ -21,7 +21,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '1.01';
+$VERSION = '1.02';
 $COMPATIBLE = '0.07';
 $FILENAME=__FILE__;
 
@@ -160,6 +160,11 @@ sub YYExpect {
     keys %{$self->{STATES}[$self->{STACK}[-1][0]]{ACTIONS}}
 }
 
+sub YYLexer {
+    my($self)=shift;
+
+	$$self{LEX};
+}
 
 
 #################
@@ -335,7 +340,6 @@ sub _Parse {
                         ?   map { $$_[1] } @$stack[ -$$dotpos .. -1 ]
                         :   ();
 
-
             $semval = $code ? &$code( $self, @sempar )
                             : @sempar ? $sempar[0] : undef;
 
@@ -379,6 +383,7 @@ sub _Parse {
 
 			    push(@$stack,
                      [ $$states[$$stack[-1][0]]{GOTOS}{$lhs}, $semval ]);
+                $$check='';
                 next;
             };
 
@@ -386,11 +391,17 @@ sub _Parse {
 #DBG>		and	print STDERR "Forced Error recovery.\n";
 
             $$check='';
+
         };
 
         #Error
             $$errstatus
         or   do {
+
+            $$errstatus = 1;
+            &$error($self);
+                $$errstatus # if 0, then YYErrok has been called
+            or  next;       # so continue parsing
 
 #DBG>			$debug & 0x10
 #DBG>		and	do {
@@ -399,7 +410,7 @@ sub _Parse {
 #DBG>		};
 
             ++$$nberror;
-            &$error($self);
+
         };
 
 			$$errstatus == 3	#The next token is not valid: discard it

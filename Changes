@@ -138,3 +138,14 @@ Revision history for Perl extension Yapp.
 1.00 Wed Oct 20 17:52:38 CEST 1999
     - Corrected a bug in Options.pm to have it run with Perl 5.6.0 
 1.01 Tue Mar 28 18:50:19 CEST 2000
+    - In YappParse.yp, if declaring a token with %left/%right/%nonassoc and
+      later redefining it with token lost precedence/associativity. Now, it
+      emits a warning
+    - In Lalr.pm, _FirstSfx, incorrectly looped when epsilon was in firstset
+      instead of beeing nullable (this one was weird)
+    - In Driver.pm, check for a call to YYErrok after calling error routine
+      to abort error recovery and continue normal parsing 
+    - New method YYLexer added in Driver.pm, to get a reference to the lexer
+      routine
+    - In Driver.pm, $check variable was not always cleaned up
+1.02 

@@ -33,7 +33,7 @@ Any help on this issue would be very welcome.
 
 DESCRIPTION
 
-This is production release 1.0.1 of the Parse::Yapp parser generator.
+This is production release 1.02 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser
 modules (see the Yapp.pm pod pages for more details) and has
