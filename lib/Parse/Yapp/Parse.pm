@@ -1,6 +1,6 @@
 ####################################################################
 #
-#    This file was generated using Parse::Yapp version 1.04.
+#    This file was generated using Parse::Yapp version 1.05.
 #
 #        Don't edit this file, use source file instead.
 #
@@ -41,7 +41,7 @@ sub new {
         ref($class)
     and $class=ref($class);
 
-    my($self)=$class->SUPER::new( yyversion => '1.04',
+    my($self)=$class->SUPER::new( yyversion => '1.05',
                                   yystates =>
 [
 	{#State 0
@@ -863,7 +863,7 @@ sub _Lexer {
         $$input=~/\G([A-Za-z_][A-Za-z0-9_]*)/gc
     and return('IDENT',[ $1, $lineno[0] ]);
 
-        $$input=~/\G('(?:[^'\\]|\\'|\\)+?')/gc
+        $$input=~/\G('(?:[^'\\]|\\\\|\\'|\\)+?')/gc
     and do {
             $1 eq "'error'"
         and do {

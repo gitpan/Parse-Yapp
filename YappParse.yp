@@ -268,7 +268,7 @@ sub _Lexer {
         $$input=~/\G([A-Za-z_][A-Za-z0-9_]*)/gc
     and return('IDENT',[ $1, $lineno[0] ]);
 
-        $$input=~/\G('(?:[^'\\]|\\'|\\)+?')/gc
+        $$input=~/\G('(?:[^'\\]|\\\\|\\'|\\)+?')/gc
     and do {
             $1 eq "'error'"
         and do {

@@ -159,3 +159,6 @@ Revision history for Perl extension Yapp.
 	- Updated copyright boundaries
     - Stress test added (compile and check a full C++ grammar)
 1.04 Mon Feb 12 16:46:37 CET 2001
+    - Bug correction in YappParse.yp _Lexer sub to accept '\\' litterals
+      (Thanks to Denis Barbier to catch this one)
+1.05 Sun Nov  4 20:32:32 CET 2001

@@ -76,7 +76,7 @@ B:  'a' | 'b' | 'c' | 'd' ;
 EOT
 , [ 'a', '*', 'b', '*', 'c', '*', 'd' ], "(a*(b*(c*d)))"
 ],
-[ #nonassoc
+[ #7 nonassoc
 <<'EOT'
 %{ my $out; %}
 %nonassoc '+'
@@ -89,6 +89,20 @@ S:      S '+' S { $out }
 %%
 EOT
 , [ 'a' , '+', 'a', '+', 'a' ], "nonassoc"
+],
+[ #8  Left assoc with '\\'
+<<'EOT'
+%{ my $out; %}
+%left '\\'
+%%
+S:  A { return($out) } ;
+A:  A '\\' A { $out="($_[1]$_[2]$_[3])" }
+  | B
+;
+B:  'a' | 'b' | 'c' | 'd' ;
+%%
+EOT
+, [ 'a', '\\', 'b', '\\', 'c', '\\', 'd' ], '(((a\b)\c)\d)'
 ],
 );
 

@@ -22,7 +22,7 @@ Any help on improving those documentations is very welcome.
 
 DESCRIPTION
 
-This is production release 1.04 of the Parse::Yapp parser generator.
+This is production release 1.05 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser modules
 (see the Yapp.pm pod pages for more details) and has been designed to
