@@ -118,3 +118,14 @@ Revision history for Perl extension Yapp.
     - Wrote pod for yapp frontend (so now there's a man 1 page !)
     - Added article in copyright notice when using the standalone parser option
 0.30 Sat Apr  3 15:36:58 CEST 1999
+    - Corrected a silly bug in yapp front-end, calling Output method with
+      inputfile parameter, which was already done with the constructor
+    - Change to yapp frontend so the F<*.output> file goes to the same
+      directory than the F<*.yp> source file
+    - Corrected Head method in Parse::Yapp::Grammar so it returns '' if there
+      is no header code, to avoid a warning with perl's -w switch
+    - Same for Tail method, so no line number is output if there is no trailer
+      code
+    - Corrected a bug in Grammar.pm, to make useful rules useless if their lhs
+      are not reachable.
+0.31 Fri May  7 21:06:32 CEST 1999

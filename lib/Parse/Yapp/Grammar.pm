@@ -190,6 +190,9 @@ sub Head {
     my($linenums)=$self->Option('linenumbers');
     my($text);
 
+        $$self{GRAMMAR}{HEAD}[0]
+    or  return '';
+
         defined($inputfile)
     or  $inputfile = 'unkown';
 
@@ -206,6 +209,9 @@ sub Tail {
     my($inputfile)=$self->Option('inputfile');
     my($linenums)=$self->Option('linenumbers');
     my($text);
+
+        $$self{GRAMMAR}{TAIL}[0]
+    or  return '';
 
         defined($inputfile)
     or  $inputfile = 'unkown';
@@ -366,6 +372,7 @@ sub _ReduceGrammar {
 
     for my $ruleno (0..$#$rules) {
             vec($ufrules,$ruleno,1)
+        and exists($$grammar{NTERM}{$$rules[$ruleno][0]})
         and do {
             push(@{$$grammar{RULES}},$$rules[$ruleno]);
             push(@{$$grammar{NTERM}{$$rules[$ruleno][0]}},$#{$$grammar{RULES}});

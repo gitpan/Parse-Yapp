@@ -21,7 +21,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '0.30';
+$VERSION = '0.31';
 $COMPATIBLE = '0.07';
 $FILENAME=__FILE__;
 

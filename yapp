@@ -175,7 +175,7 @@ and	print STDERR $warnings;
 
 	$opt_v
 and	do {
-	my($output)="$base.output";
+	my($output)="$path$base.output";
 	my($tmp);
 
 		open(OUT,">$output")
@@ -195,7 +195,7 @@ and	do {
 	close(OUT);
 };
 
-my($outfile)="$base.pm";
+my($outfile)="$path$base.pm";
 my($package)="$base";
 
 	$opt_m
@@ -217,8 +217,7 @@ or	die "Cannot open $outfile for writing.\n";
 
 print OUT $parser->Output(classname  => $package,
                           standalone => $opt_s,
-                          linenumbers => $opt_n,
-                          inputfile  => "$base$sfx");
+                          linenumbers => $opt_n);
 
 close(OUT);
 

@@ -32,7 +32,7 @@ Any help on this issue would be very welcome.
 
 DESCRIPTION
 
-This is the alpha release 0.30 of the Parse::Yapp parser generator.
+This is the beta release 0.31 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser
 modules (see the Yapp.pm pod pages for more details) and has
