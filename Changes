@@ -56,3 +56,7 @@ Revision history for Perl extension Yapp.
 0.13  Never released. (I'm not supersticious, but who knows...8-))
     - Renaming to Parse::Yapp for better CPAN entry...
 0.14  Wed Jul 29 21:43:03 GMT 1998
+    - Doc change: empty token is '', not undef (perl -w complains otherwise)
+    - Bug in _ReduceGrammar: used $ruleno instead of $#{$grammar{RULES}}
+      making no-terminal pointing to wrong rhs if useless rules.
+0.15  Mon Aug 17 11:39:01 CEST 1998

@@ -325,8 +325,8 @@ sub _ReduceGrammar {
     for my $ruleno (0..$#$rules) {
             vec($ufrules,$ruleno,1)
         and do {
-            push(@{$$grammar{NTERM}{$$rules[$ruleno][0]}},$ruleno);
             push(@{$$grammar{RULES}},$$rules[$ruleno]);
+            push(@{$$grammar{NTERM}{$$rules[$ruleno][0]}},$#{$$grammar{RULES}});
             next;
         };
         push(@{$$grammar{UURULES}},[ @{$$rules[$ruleno]}[0,1] ]);

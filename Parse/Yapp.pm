@@ -325,7 +325,7 @@ or
 When the lexer reach the end of input, it must return the C<''>
 empty token with an undef value:
 
-     ( '', undef ) or ( undef, undef )
+     ( '', undef )
 
 Note that your lexer should I<never> return C<'error'> as token
 value: for the driver, this is the error token used for error

@@ -1,6 +1,6 @@
 #########################################################################
 #
-#      This file was generated using Parse::Yapp version 0.14.
+#      This file was generated using Parse::Yapp version 0.15.
 #
 #          Don't edit this file, use source file instead.
 #
@@ -39,7 +39,7 @@ sub new {
         ref($class)
     and $class=ref($class);
 
-    my($self)=$class->SUPER::new( yyversion => '0.14',
+    my($self)=$class->SUPER::new( yyversion => '0.15',
                                   yystates =>
 [
 	{#State 0
@@ -231,7 +231,7 @@ sub new {
 		DEFAULT => -17
 	},
 	{#State 25
-		DEFAULT => 0
+		DEFAULT => -0
 	},
 	{#State 26
 		DEFAULT => -8

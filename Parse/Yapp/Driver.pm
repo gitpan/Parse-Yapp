@@ -13,7 +13,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE );
 
-$VERSION = '0.14';
+$VERSION = '0.15';
 $COMPATIBLE = '0.07';
 
 use Carp;
