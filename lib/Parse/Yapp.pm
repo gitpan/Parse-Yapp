@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp.pm.
 #
-# Copyright (c) 1998, Francois Desarmenien, all right reserved.
+# Copyright (c) 1998-1999, Francois Desarmenien, all right reserved.
 #
 # See the Copyright section at the end of the Parse/Yapp.pm pod section
 # for usage and distribution rights.
@@ -28,7 +28,7 @@ Parse::Yapp - Perl extension for generating and using LALR parsers.
 
 =head1 SYNOPSIS
 
-  yapp.pl -m MyParser grammar_file.yp
+  yapp -m MyParser grammar_file.yp
 
   ...
 
@@ -46,10 +46,10 @@ Parse::Yapp - Perl extension for generating and using LALR parsers.
 =head1 DESCRIPTION
 
 Parse::Yapp (Yet Another Perl Parser compiler) is a collection of modules
-that let you generate and use yacc like thread safe parsers with perl objec
-oriented interface.
+that let you generate and use yacc like thread safe (reentrant) parsers with
+perl object oriented interface.
 
-The script yapp.pl is a front-end to the Parse::Yapp module and let you
+The script yapp is a front-end to the Parse::Yapp module and let you
 easily create a Perl OO parser from an input grammar file.
 
 =head2 The Grammar file
@@ -236,13 +236,13 @@ All those methods explicitly return I<undef>, for convenience.
 
     YYRECOVERING is done by calling $_[0]->YYRecovering
 
-Two useful methods in error recovery sub
+Three useful methods in error recovery sub
 
     $_[0]->YYCurtok
     $_[0]->YYCurval
     $_[0]->YYExpect
 
-returns respectivly the current input token that made the parse fail,
+return respectivly the current input token that made the parse fail,
 its semantic value (both can be used to modify their values too, but
 know what you do !) and a list which contains the tokens the parser
 expected when the failure occured.
@@ -250,7 +250,7 @@ expected when the failure occured.
 Note that if C<$_[0]-E<gt>YYCurtok> is declared as a C<%nonassoc> token,
 it can be included in C<$_[0]-E<gt>YYExpect> list whenever the input
 try to use it in an associative way. This is not a bug: the token
-IS expected to report an error.
+IS expected to report an error if encountered.
 
 To detect such a thing in your error reporting sub, the following
 example should do the trick:
@@ -259,7 +259,6 @@ example should do the trick:
     and do {
         #Non-associative token used in an associative expression
     };
-
 
 Accessing semantics values on the left of your reducing rule is done
 through the method
@@ -279,7 +278,7 @@ accessed by the method:
 
 which returns a reference to an anonymous hash, letting you have
 all of your parsing data held inside the object (see the Calc.yp
-or the test.pl file in the distribution for some examples).
+or ParseYapp.yp files in the distribution for some examples).
 That's how you can make you parser module reentrant: all of your
 module states and variables are held inside the parser object.
 
@@ -306,12 +305,16 @@ and I<-1> represents the "dot position" in the rule where the action arises.
 In such actions, you can use I<$_[1]..$_[n]> variables, which are the
 semantic values on the left of your action.
 
+Be aware that the way Parse::Yapp modifies your grammar because of
+I<in rule actions> can produce, in some cases, spurious conflicts
+that wouldn't happen otherwise.  
+
 =item C<Generating the Parser Module>
 
-Now that you grammar file is written, you can use yapp.pl on it
+Now that you grammar file is written, you can use yapp on it
 to generate your parser module:
 
-    yapp.pl -v Calc.yp
+    yapp -v Calc.yp
 
 will create two files F<Calc.pm>, your parser module, and F<Calc.output>
 a verbose output of your parser rules, conflicts, warnings, states
@@ -433,15 +436,26 @@ module installed on the system to run. They use the Parse::Yapp::Driver
 which can be safely shared between parsers in the same script.
 
 In the case you'd prefer to have a standalone module generated, use
-the C<-s> switch with yapp.pl: this will automagically copy the driver
+the C<-s> switch with yapp: this will automagically copy the driver
 code into your module so you can use/distribute it without the need
 of the Parse::Yapp module, making it really a C<Standalone Parser>.
 
 If you do so, please remember to include Parse::Yapp's copyright notice
 in your main module copyright, so others can know about Parse::Yapp module.
 
+=item C<Source file line numbers>
+
+by default will be included in the generated parser module, which will help
+to find the guilty line in your source file in case of a syntax error.
+You can disable this feature by compiling your grammar with yapp using
+the C<-n> switch.
 
 =back
+
+=head1 BUGS AND SUGGESTIONS
+
+If you find any bug, think of anything that could improve Parse::Yapp
+or have any questions related to it, feel free to contact the author.
 
 =head1 AUTHOR
 
@@ -449,15 +463,20 @@ Francois Desarmenien  desar@club-internet.fr
 
 =head1 SEE ALSO
 
-perl(1) yacc(1) bison(1).
+yapp(1) perl(1) yacc(1) bison(1).
 
 =head1 COPYRIGHT
 
 The Parse::Yapp module and its related modules and shell scripts are copyright
-(c) 1998 Francois Desarmenien, France. All rights reserved.
+(c) 1998-1999 Francois Desarmenien, France. All rights reserved.
 
 You may use and distribute them under the terms of either
 the GNU General Public License or the Artistic License,
 as specified in the Perl README file.
+
+If you use the "standalone parser" option so people don't need to install
+Parse::Yapp on their systems in order to run you software, this copyright
+noticed should be included in your software copyright too, and the copyright
+notice in the embedded driver should be left untouched.
 
 =cut

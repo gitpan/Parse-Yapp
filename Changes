@@ -88,7 +88,7 @@ Revision history for Perl extension Yapp.
     - Modified yapp.pl to add -V option and make output default to final name
       of package, if -m option is specified. Usage updated.
     - Added missing $@ check after eval of debugging driver.
-0.21  Thu Dec 24 18:55:47 CET 1998
+0.21  Thu Dec 24 17:55:47 GMT 1998
     - Corrected a weird bug in Lalr.pm (_SolveConflicts & _SetDefaults) about
       shift/reduce conflicts on non-associative tokens
     - Added a test in base.t to check non-associative conflicts and error
@@ -96,3 +96,25 @@ Revision history for Perl extension Yapp.
     - Added some doc to explain YYExpect can include YYCurtok when non-associ-
       ative errors happen
 0.22  Wed Mar 10 17:03:39 CET 1999
+    - Moved Parse path tree under lib to be conformant with standard Perl
+      modules distributions
+    - Added Parse::Yapp::Options class as parent of Parse::Yapp::Grammar
+      to handle various options.
+    - As the Output method is not really 'public' yet, it now takes its
+      arguments as hash list, like YYParse. Can break code of people not
+      using the yapp.pl front-end.
+      Of course, its arguments are handled by Parse::Yapp::Options
+    - Added #line "inputfile" trace in generated grammar by default for input
+      source line numbers (obvious reason for adding that :-).
+    - Added language, linenumbers, inputfile, classname, standalone and input
+      options which default to ( 'Perl', 1, undef, 'Parser', 0, undef )
+    - Modified yapp.pl for new parameter list
+    - Idem for t/base.t and t/calc.t
+    - Modified Grammar.pm so it uses linenumbers option to know it must output
+      line numbers and inputfile as the filename. If inputfile is undef, then
+      use 'unkown'.
+    - Added a new flag -n to yapp.pl to disable line numbers in parser output
+    - Renamed yapp.pl to yapp (bored of typing .pl)
+    - Wrote pod for yapp frontend (so now there's a man 1 page !)
+    - Added article in copyright notice when using the standalone parser option
+0.30 Sat Apr  3 15:36:58 CEST 1999

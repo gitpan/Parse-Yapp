@@ -1,4 +1,5 @@
-$^W=0;
+$DEBUG=0;
+$|=1;
 
 @tests=(
   [ #1  Basic test
@@ -108,8 +109,11 @@ sub TestIt {
 
     ++$count;
 
-    my($p)=new Parse::Yapp($g);
-    $p=$p->Output('Test');
+    my($p)=new Parse::Yapp(input => $g);
+    $p=$p->Output(classname => 'Test');
+
+        $DEBUG
+    and print $p;
 
     eval $p;
         $@
@@ -130,6 +134,7 @@ sub TestIt {
         print 'not ';
     };
     print 'ok'," $count\n";
+    undef(&Test::new);
 }
 
 print '1..'.@tests."\n";

@@ -29,7 +29,7 @@ my($yapptxt);
 #Test 2
 eval  {
 	$grammar=join('',<DATA>);
-	$parser=new Parse::Yapp($grammar);
+	$parser=new Parse::Yapp(input => $grammar);
 };
 
 	$@
@@ -43,7 +43,7 @@ print "ok $testnum\n";
 
 #Test 3
 eval {
-	$yapptxt=$parser->Output('Calc');
+	$yapptxt=$parser->Output(classname => 'Calc');
 };
 	$@
 and	do {

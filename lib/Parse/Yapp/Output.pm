@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Output
 #
-# (c) Copyright 1998 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Output;
@@ -27,7 +27,10 @@ sub _CopyDriver {
 
 sub Output {
     my($self)=shift;
-    my($package,$standalone)=@_;
+
+    $self->Options(@_);
+
+    my($package)=$self->Option('classname');
     my($head,$states,$rules,$tail,$driver);
     my($version)=$Parse::Yapp::Driver::VERSION;
     my($datapos);
@@ -78,7 +81,7 @@ EOT
 	$states=$self->DfaTable();
 	$tail= $self->Tail();
 
-		$standalone
+		$self->Option('standalone')
 	and	$driver=_CopyDriver();
 
 	$text=~s/<<(\$.+)>>/$1/gee;

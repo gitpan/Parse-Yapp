@@ -3,24 +3,25 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     'NAME'	=> 'Parse::Yapp',
-    'VERSION_FROM' => 'Parse/Yapp/Driver.pm', # finds $VERSION
-    'MAN3PODS' => { 'Parse/Yapp.pm' => '$(INST_MAN3DIR)/Parse::Yapp.3' },
+    'VERSION_FROM' => 'lib/Parse/Yapp/Driver.pm', # finds $VERSION
+    'MAN3PODS' => { 'lib/Parse/Yapp.pm' => '$(INST_MAN3DIR)/Parse::Yapp.3' },
     'PM' => {
-              'Parse/Yapp.pm' => '$(INST_LIBDIR)/Yapp.pm',
-              'Parse/Yapp/Driver.pm' => '$(INST_LIBDIR)/Yapp/Driver.pm',
-              'Parse/Yapp/Grammar.pm' => '$(INST_LIBDIR)/Yapp/Grammar.pm',
-              'Parse/Yapp/Lalr.pm' => '$(INST_LIBDIR)/Yapp/Lalr.pm',
-              'Parse/Yapp/Output.pm' => '$(INST_LIBDIR)/Yapp/Output.pm',
-              'Parse/Yapp/Parse.pm' => '$(INST_LIBDIR)/Yapp/Parse.pm'
+              'lib/Parse/Yapp.pm' => '$(INST_LIBDIR)/Yapp.pm',
+              'lib/Parse/Yapp/Options.pm' => '$(INST_LIBDIR)/Yapp/Options.pm',
+              'lib/Parse/Yapp/Driver.pm' => '$(INST_LIBDIR)/Yapp/Driver.pm',
+              'lib/Parse/Yapp/Grammar.pm' => '$(INST_LIBDIR)/Yapp/Grammar.pm',
+              'lib/Parse/Yapp/Lalr.pm' => '$(INST_LIBDIR)/Yapp/Lalr.pm',
+              'lib/Parse/Yapp/Output.pm' => '$(INST_LIBDIR)/Yapp/Output.pm',
+              'lib/Parse/Yapp/Parse.pm' => '$(INST_LIBDIR)/Yapp/Parse.pm'
             },
-	'EXE_FILES' => [ 'yapp.pl' ],
+	'EXE_FILES' => [ 'yapp' ],
 );
 
 sub MY::postamble {
 <<'EOT';
-YAPPPARSE = Parse/Yapp/Parse.pm
+YAPPPARSE = lib/Parse/Yapp/Parse.pm
 
 $(YAPPPARSE) :: YappParse.yp
-	$(PERL) -I. yapp.pl -m 'Parse::Yapp::Parse' -o 'Parse/Yapp/Parse.pm' YappParse.yp
+	$(PERL) -I./lib yapp -m 'Parse::Yapp::Parse' -o 'lib/Parse/Yapp/Parse.pm' YappParse.yp
 EOT
 }

@@ -1,6 +1,6 @@
 #########################################################################
 #
-#      This file was generated using Parse::Yapp version 0.22.
+#      This file was generated using Parse::Yapp version 0.30.
 #
 #          Don't edit this file, use source file instead.
 #
@@ -14,15 +14,17 @@ use strict;
 @ISA= qw ( Parse::Yapp::Driver );
 use Parse::Yapp::Driver;
 
-# (c) Copyright Francois Desarmenien 1998, all rights reserved.
+#line 1 "YappParse.yp"
+# (c) Copyright Francois Desarmenien 1998-1999, all rights reserved.
 # (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
 #
 # Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file
 #
-# Use: yapp.pl -m 'Parse::Yapp::Parse' -o Parse/Yapp/Parse.pm YappParse.yp
+# Use: yapp -m 'Parse::Yapp::Parse' -o Parse/Yapp/Parse.pm YappParse.yp
 #
 # to generate the Parser module.
 # 
+#line 12 "YappParse.yp"
 
 require 5.004;
 
@@ -39,7 +41,7 @@ sub new {
         ref($class)
     and $class=ref($class);
 
-    my($self)=$class->SUPER::new( yyversion => '0.22',
+    my($self)=$class->SUPER::new( yyversion => '0.30',
                                   yystates =>
 [
 	{#State 0
@@ -485,32 +487,32 @@ sub new {
 	],
 	[#Rule 2
 		 'symbol', 1,
-sub {
-
+sub
+#line 30 "YappParse.yp"
+{
                         exists($$syms{$_[1][0]})
                     or  do {
                         $$syms{$_[1][0]} = $_[1][1];
                         $$term{$_[1][0]} = undef;
                     };
                     $_[1]
-                
-}
+                }
 	],
 	[#Rule 3
 		 'symbol', 1, undef
 	],
 	[#Rule 4
 		 'ident', 1,
-sub {
-
+sub
+#line 41 "YappParse.yp"
+{
                         exists($$syms{$_[1][0]})
                     or  do {
                         $$syms{$_[1][0]} = $_[1][1];
                         $$term{$_[1][0]} = undef;
                     };
                     $_[1]
-                
-}
+                }
 	],
 	[#Rule 5
 		 'head', 2, undef
@@ -532,8 +534,9 @@ sub {
 	],
 	[#Rule 11
 		 'decl', 4,
-sub {
-
+sub
+#line 66 "YappParse.yp"
+{
                 for (@{$_[3]}) {
                     my($symbol,$lineno)=@$_;
 
@@ -549,13 +552,13 @@ sub {
                     $$term{$symbol} = [ ];
                 }
                 undef
-            
-}
+            }
 	],
 	[#Rule 12
 		 'decl', 4,
-sub {
-
+sub
+#line 84 "YappParse.yp"
+{
                 for (@{$_[3]}) {
                     my($symbol,$lineno)=@$_;
 
@@ -571,31 +574,31 @@ sub {
                 }
                 ++$prec;
                 undef
-            
-}
+            }
 	],
 	[#Rule 13
 		 'decl', 3,
-sub {
- $start=$_[2][0]; undef 
-}
+sub
+#line 101 "YappParse.yp"
+{ $start=$_[2][0]; undef }
 	],
 	[#Rule 14
 		 'decl', 2,
-sub {
- $head.=$_[1][0]; undef 
-}
+sub
+#line 102 "YappParse.yp"
+{ push(@$head,$_[1]); undef }
 	],
 	[#Rule 15
 		 'decl', 3,
-sub {
- undef 
-}
+sub
+#line 103 "YappParse.yp"
+{ undef }
 	],
 	[#Rule 16
 		 'decl', 4,
-sub {
-
+sub
+#line 105 "YappParse.yp"
+{
                 for ( @{$_[3]} ) {
                     my($symbol,$lineno)=@$_;
 
@@ -610,20 +613,19 @@ sub {
                     delete($$term{$symbol});   #not a terminal
                     $$nterm{$symbol}=undef;    #is a non-terminal
                 }
-            
-}
+            }
 	],
 	[#Rule 17
 		 'decl', 3,
-sub {
- $expect=$_[2][0]; undef 
-}
+sub
+#line 121 "YappParse.yp"
+{ $expect=$_[2][0]; undef }
 	],
 	[#Rule 18
 		 'decl', 2,
-sub {
- $_[0]->YYErrok 
-}
+sub
+#line 122 "YappParse.yp"
+{ $_[0]->YYErrok }
 	],
 	[#Rule 19
 		 'typedecl', 0, undef
@@ -633,32 +635,33 @@ sub {
 	],
 	[#Rule 21
 		 'symlist', 2,
-sub {
- push(@{$_[1]},$_[2]); $_[1] 
-}
+sub
+#line 129 "YappParse.yp"
+{ push(@{$_[1]},$_[2]); $_[1] }
 	],
 	[#Rule 22
 		 'symlist', 1,
-sub {
- [ $_[1] ] 
-}
+sub
+#line 130 "YappParse.yp"
+{ [ $_[1] ] }
 	],
 	[#Rule 23
 		 'identlist', 2,
-sub {
- push(@{$_[1]},$_[2]); $_[1] 
-}
+sub
+#line 133 "YappParse.yp"
+{ push(@{$_[1]},$_[2]); $_[1] }
 	],
 	[#Rule 24
 		 'identlist', 1,
-sub {
- [ $_[1] ] 
-}
+sub
+#line 134 "YappParse.yp"
+{ [ $_[1] ] }
 	],
 	[#Rule 25
 		 'body', 2,
-sub {
-
+sub
+#line 139 "YappParse.yp"
+{
                     $start
                 or  $start=$$rules[1][0];
 
@@ -667,14 +670,13 @@ sub {
                                    "in rules section",$_[2][1]);
 
                 $$rules[0]=[ '$start', [ $start, chr(0) ], undef, undef ];
-            
-}
+            }
 	],
 	[#Rule 26
 		 'body', 1,
-sub {
- _SyntaxError(2,"No rules in input grammar",$_[1][1]); 
-}
+sub
+#line 149 "YappParse.yp"
+{ _SyntaxError(2,"No rules in input grammar",$_[1][1]); }
 	],
 	[#Rule 27
 		 'rulesec', 2, undef
@@ -684,49 +686,49 @@ sub {
 	],
 	[#Rule 29
 		 'rules', 4,
-sub {
- _AddRules($_[1],$_[3]); undef 
-}
+sub
+#line 156 "YappParse.yp"
+{ _AddRules($_[1],$_[3]); undef }
 	],
 	[#Rule 30
 		 'rules', 2,
-sub {
- $_[0]->YYErrok 
-}
+sub
+#line 157 "YappParse.yp"
+{ $_[0]->YYErrok }
 	],
 	[#Rule 31
 		 'rhss', 3,
-sub {
- push(@{$_[1]},$_[3]); $_[1] 
-}
+sub
+#line 160 "YappParse.yp"
+{ push(@{$_[1]},$_[3]); $_[1] }
 	],
 	[#Rule 32
 		 'rhss', 1,
-sub {
- [ $_[1] ] 
-}
+sub
+#line 161 "YappParse.yp"
+{ [ $_[1] ] }
 	],
 	[#Rule 33
 		 'rule', 3,
-sub {
- push(@{$_[1]}, $_[2], $_[3][0]); $_[1] 
-}
+sub
+#line 164 "YappParse.yp"
+{ push(@{$_[1]}, $_[2], $_[3]); $_[1] }
 	],
 	[#Rule 34
 		 'rule', 1,
-sub {
-
+sub
+#line 165 "YappParse.yp"
+{
                                 my($code)=undef;
 
                                     defined($_[1])
                                 and $_[1][-1][0] eq 'CODE'
-                                and $code = ${pop(@{$_[1]})}[1][0];
+                                and $code = ${pop(@{$_[1]})}[1];
 
                                 push(@{$_[1]}, undef, $code);
 
                                 $_[1]
-                            
-}
+                            }
 	],
 	[#Rule 35
 		 'rhs', 0, undef
@@ -736,32 +738,33 @@ sub {
 	],
 	[#Rule 37
 		 'rhselts', 2,
-sub {
- push(@{$_[1]},$_[2]); $_[1] 
-}
+sub
+#line 182 "YappParse.yp"
+{ push(@{$_[1]},$_[2]); $_[1] }
 	],
 	[#Rule 38
 		 'rhselts', 1,
-sub {
- [ $_[1] ] 
-}
+sub
+#line 183 "YappParse.yp"
+{ [ $_[1] ] }
 	],
 	[#Rule 39
 		 'rhselt', 1,
-sub {
- [ 'SYMB', $_[1] ] 
-}
+sub
+#line 186 "YappParse.yp"
+{ [ 'SYMB', $_[1] ] }
 	],
 	[#Rule 40
 		 'rhselt', 1,
-sub {
- [ 'CODE', $_[1] ] 
-}
+sub
+#line 187 "YappParse.yp"
+{ [ 'CODE', $_[1] ] }
 	],
 	[#Rule 41
 		 'prec', 2,
-sub {
-
+sub
+#line 191 "YappParse.yp"
+{
                        	defined($$term{$_[2][0]})
                     or  do {
                         _SyntaxError(1,"No precedence for symbol $_[2][0]",
@@ -771,43 +774,42 @@ sub {
 
                     ++$$precterm{$_[2][0]};
                     $$term{$_[2][0]}[1];
-				
-}
+				}
 	],
 	[#Rule 42
 		 'epscode', 0,
-sub {
- undef 
-}
+sub
+#line 204 "YappParse.yp"
+{ undef }
 	],
 	[#Rule 43
 		 'epscode', 1,
-sub {
- $_[1] 
-}
+sub
+#line 205 "YappParse.yp"
+{ $_[1] }
 	],
 	[#Rule 44
 		 'code', 1,
-sub {
- $_[1] 
-}
+sub
+#line 208 "YappParse.yp"
+{ $_[1] }
 	],
 	[#Rule 45
 		 'tail', 0, undef
 	],
 	[#Rule 46
 		 'tail', 1,
-sub {
- $tail=$_[1][0] 
-}
+sub
+#line 214 "YappParse.yp"
+{ $tail=$_[1] }
 	]
 ],
                                   @_);
     bless($self,$class);
 }
 
+#line 217 "YappParse.yp"
 
-		
 sub _Error {
     my($value)=$_[0]->YYCurval;
 
@@ -1005,7 +1007,7 @@ sub _AddRules {
                 $what eq 'CODE'
             and do {
                 my($name)='@'.++$labelno."-$_";
-                push(@$rules,[ $name, [], undef, $$value[0] ]);
+                push(@$rules,[ $name, [], undef, $value ]);
                 push(@{$$tmprule[1]},$name);
                 next;
             };
@@ -1035,7 +1037,7 @@ sub Parse {
     $prec=0;
     $labelno=0;
 
-    $head="";
+    $head=();
     $tail="";
 
     $syms={};
@@ -1052,7 +1054,7 @@ sub Parse {
     pos($$input)=0;
 
 
-    $self->YYParse(yylex => \&_Lexer, yyerror => \&_Error );
+    $self->YYParse(yylex => \&_Lexer, yyerror => \&_Error);
 
         $nberr
     and _SyntaxError(2,"Errors detected: No output",-1);

@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Lalr
 #
-# (c) Copyright 1998 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Lalr;
@@ -76,6 +76,7 @@ sub new {
 ###########
 # Methods #
 ###########
+
 ###########################
 # Method To View Warnings #
 ###########################

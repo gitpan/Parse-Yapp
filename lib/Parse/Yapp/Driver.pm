@@ -9,7 +9,7 @@
 #
 # This notice should remain unchanged.
 #
-# (c) Copyright 1998 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 
@@ -21,7 +21,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '0.22';
+$VERSION = '0.30';
 $COMPATIBLE = '0.07';
 $FILENAME=__FILE__;
 

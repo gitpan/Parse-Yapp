@@ -1,13 +1,17 @@
 #
 # Module Parse::Yapp::Grammar
 #
-# (c) Copyright 1998 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Grammar;
+@ISA=qw( Parse::Yapp::Options );
 
 require 5.004;
 
+use Carp;
+use strict;
+use Parse::Yapp::Options;
 use Parse::Yapp::Parse;
 
 my($head,$tail,$rules,$nterm,$term,$nullable,$precterm,$syms,$start,$expect);
@@ -19,18 +23,18 @@ my($ufrules,$ufnterm,$reachable);
 sub new {
     my($class)=shift;
 
-    my($self)={};
-
-        ref($class)
-    and $class=ref($class);
+    my($self)=$class->SUPER::new(@_);
 
     my($parser)=new Parse::Yapp::Parse;
 
+        defined($self->Option('input'))
+    or  croak "No input grammar";
+
         ($head,$tail,$rules,$nterm,$term,
          $nullable,$precterm,$syms,$start,$expect)
-    =  @{$parser->Parse(@_)}
+    =  @{$parser->Parse($self->Option('input'))}
         {'HEAD','TAIL','RULES','NTERM','TERM',
-         'NULL','PREC','SYMS','START','EXPECT'};
+         'NULL','PREC','SYMS','START','EXPECT','OUTPUT'};
 
     undef($parser);
 
@@ -50,13 +54,15 @@ sub new {
     undef($start);
     undef($expect);
 
+        ref($class)
+    and $class=ref($class);
+
     bless($self, $class);
 }
 
 ###########
 # Methods #
 ###########
-
 ##########################
 # Method To View Grammar #
 ##########################
@@ -137,9 +143,14 @@ sub Summary {
 ###############################
 sub RulesTable {
     my($self)=shift;
+    my($inputfile)=$self->Option('inputfile');
+    my($linenums)=$self->Option('linenumbers');
     my($rules)=$$self{GRAMMAR}{RULES};
     my($ruleno);
     my($text);
+
+        defined($inputfile)
+    or  $inputfile = 'unkown';
 
     $text="[\n\t";
 
@@ -151,7 +162,11 @@ sub RulesTable {
 
                     $text.="[#Rule ".$ruleno++."\n\t\t '$lhs', $len,";
                     if($code) {
-                        $text.="\nsub {\n$code\n}";
+                        $text.= "\nsub".
+                                (  $linenums
+                                 ? qq(\n#line $$code[1] "$inputfile"\n)
+                                 : " ").
+                                "{$$code[0]}";
                     }
                     else {
                         $text.=' undef';
@@ -171,12 +186,35 @@ sub RulesTable {
 ################################
 sub Head {
     my($self)=shift;
-    $$self{GRAMMAR}{HEAD};
+    my($inputfile)=$self->Option('inputfile');
+    my($linenums)=$self->Option('linenumbers');
+    my($text);
+
+        defined($inputfile)
+    or  $inputfile = 'unkown';
+
+    for (@{$$self{GRAMMAR}{HEAD}}) {
+            $linenums
+        and $text.=qq(#line $$_[1] "$inputfile"\n);
+        $text.=$$_[0];
+    }
+    $text
 }
 
 sub Tail {
     my($self)=shift;
-    $$self{GRAMMAR}{TAIL};
+    my($inputfile)=$self->Option('inputfile');
+    my($linenums)=$self->Option('linenumbers');
+    my($text);
+
+        defined($inputfile)
+    or  $inputfile = 'unkown';
+
+        $linenums
+    and $text=qq(#line $$self{GRAMMAR}{TAIL}[1] "$inputfile"\n);
+    $text.=$$self{GRAMMAR}{TAIL}[0];
+
+    $text
 }
 
 

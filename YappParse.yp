@@ -1,9 +1,9 @@
-%{# (c) Copyright Francois Desarmenien 1998, all rights reserved.
+%{# (c) Copyright Francois Desarmenien 1998-1999, all rights reserved.
 # (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
 #
 # Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file
 #
-# Use: yapp.pl -m 'Parse::Yapp::Parse' -o Parse/Yapp/Parse.pm YappParse.yp
+# Use: yapp -m 'Parse::Yapp::Parse' -o Parse/Yapp/Parse.pm YappParse.yp
 #
 # to generate the Parser module.
 # 
@@ -99,7 +99,7 @@ decl:  '\n'                 #default action
                 undef
             }
     |   START ident '\n'                { $start=$_[2][0]; undef }
-    |   HEADCODE '\n'                   { $head.=$_[1][0]; undef }
+    |   HEADCODE '\n'                   { push(@$head,$_[1]); undef }
     |   UNION CODE '\n'                 { undef } #ignore
     |   TYPE typedecl identlist '\n'
             {
@@ -161,13 +161,13 @@ rhss:	rhss '|' rule   { push(@{$_[1]},$_[3]); $_[1] }
 	|	rule            { [ $_[1] ] }
 ;
 
-rule:   rhs prec epscode    { push(@{$_[1]}, $_[2], $_[3][0]); $_[1] }
+rule:   rhs prec epscode    { push(@{$_[1]}, $_[2], $_[3]); $_[1] }
     |   rhs                 {
                                 my($code)=undef;
 
                                     defined($_[1])
                                 and $_[1][-1][0] eq 'CODE'
-                                and $code = ${pop(@{$_[1]})}[1][0];
+                                and $code = ${pop(@{$_[1]})}[1];
 
                                 push(@{$_[1]}, undef, $code);
 
@@ -211,11 +211,10 @@ code:		CODE	    { $_[1] }
 # Tail section:
 
 tail:       /*empty*/
-        |   TAILCODE    { $tail=$_[1][0] }
+        |   TAILCODE    { $tail=$_[1] }
 ;
 
 %%
-		
 sub _Error {
     my($value)=$_[0]->YYCurval;
 
@@ -413,7 +412,7 @@ sub _AddRules {
                 $what eq 'CODE'
             and do {
                 my($name)='@'.++$labelno."-$_";
-                push(@$rules,[ $name, [], undef, $$value[0] ]);
+                push(@$rules,[ $name, [], undef, $value ]);
                 push(@{$$tmprule[1]},$name);
                 next;
             };
@@ -443,7 +442,7 @@ sub Parse {
     $prec=0;
     $labelno=0;
 
-    $head="";
+    $head=();
     $tail="";
 
     $syms={};
@@ -460,7 +459,7 @@ sub Parse {
     pos($$input)=0;
 
 
-    $self->YYParse(yylex => \&_Lexer, yyerror => \&_Error );
+    $self->YYParse(yylex => \&_Lexer, yyerror => \&_Error);
 
         $nberr
     and _SyntaxError(2,"Errors detected: No output",-1);
