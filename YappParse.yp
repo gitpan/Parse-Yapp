@@ -1,4 +1,4 @@
-%{# (c) Copyright Francois Desarmenien 1998-1999, all rights reserved.
+%{# (c) Copyright Francois Desarmenien 1998-2000, all rights reserved.
 # (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
 #
 # Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file

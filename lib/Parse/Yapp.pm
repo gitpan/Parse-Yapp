@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp.pm.
 #
-# Copyright (c) 1998-1999, Francois Desarmenien, all right reserved.
+# Copyright (c) 1998-2000, Francois Desarmenien, all right reserved.
 #
 # See the Copyright section at the end of the Parse/Yapp.pm pod section
 # for usage and distribution rights.
@@ -87,7 +87,8 @@ if you need a single quote inside your literal, just quote it with '\'.
 You cannot have a literal I<'error'> in your grammar as it would
 confuse the driver with the I<error> token. Use a symbolic token instead.
 Using it anyway will produce a warning telling you you should have wrote
-it I<error> and will treat it as if it were the I<error> token.
+it I<error> and will treat it as if it were the I<error> token. Actually,
+it's certainly NOT what you want.
 
 
 =item C<Grammar file syntax>
@@ -152,7 +153,7 @@ conflicts when both numbers match, a la bison.
 =item B<The Rule Section> contains your grammar rules:
 
 A rule is made of a left-hand-side symbol, followed by a C<':'> and one
-or more right hand sides separated by C<'|'> and terminated by a C<';'>:
+or more right-hand-sides separated by C<'|'> and terminated by a C<';'>:
 
     exp:    exp '+' exp
         |   exp '-' exp
@@ -170,7 +171,7 @@ conflict)
 
 
 A rhs may be followed by an optionnal C<%prec> directive, followed
-by a token, giving the rule and explicit precedence (see yacc manuals
+by a token, giving the rule an explicit precedence (see yacc manuals
 for its precise meaning) and optionnal semantic action code block (see
 below).
 
@@ -485,7 +486,7 @@ or have any questions related to it, feel free to contact the author.
 
 =head1 AUTHOR
 
-Francois Desarmenien  francois@fdesar.net
+Francois Desarmenien  <francois@fdesar.net>
 
 =head1 SEE ALSO
 

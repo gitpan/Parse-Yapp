@@ -5,47 +5,36 @@ Compiles yacc-like LALR grammars to generate Perl OO parser modules.
 
 COPYRIGHT
 
-(c) 1998-99 Francois Desarmenien, all rights reserved.
+(c) 1998-2000 Francois Desarmenien, all rights reserved.
 (see the Copyright section in Yapp.pm for usage and distribution rights)
 
 IMPORTANT NOTES
-
-While I'll will maintain and improve it through your comments and bug
-reports, further developments will go in another version numbering
-scheme I haven't choosed yet (probably "a la linux", with even sub-numbers
-beeing production. Advises are, of course, very welcome).
-
-Note that with future versions, the interface *may* change and be
-incompatible with previous version, although I'll try hard not to break
-backward compatibility, I'll always choose efficiency as a first
-criteria.
 
 The Parse::Yapp pod section is the main documentation and it assumes
 you already have a good knowledge of yacc. If not, I suggest the GNU
 Bison manual which is a very good tutorial to LALR parsing and yacc
 grammar syntax.
 
-The yapp frontend has now its own documentation using either
-'perldoc yapp' or (on systems with man pages) 'man yapp'.
+The yapp frontend has its own documentation using either 'perldoc yapp'
+or (on systems with man pages) 'man yapp'.
 
-The documentation is (still) only a draft and should be rewritten (I think).
-Any help on this issue would be very welcome.
+Any help on improving those documentations is very welcome.
 
 DESCRIPTION
 
-This is production release 1.02 of the Parse::Yapp parser generator.
+This is production release 1.03 of the Parse::Yapp parser generator.
 
-It lets you create Perl OO fully reentrant LALR(1) parser
-modules (see the Yapp.pm pod pages for more details) and has
-been designed to be functionnaly as close as possible to yacc,
-but using the full power of Perl and opened for enhancements.
+It lets you create Perl OO fully reentrant LALR(1) parser modules
+(see the Yapp.pm pod pages for more details) and has been designed to
+be functionally as close as possible to yacc, but using the full power
+of Perl and opened for enhancements.
 
 REQUIREMENTS
 
 Requires perl5.004 or better :)
 
-It is written only in Perl, with standard distribution modules,
-so you don't need any compiler nor special modules.
+It is written only in Perl, with standard distribution modules, so you
+don't need any compiler nor special modules.
 
 INSTALLATION
 
@@ -62,6 +51,6 @@ I just hope it can be useful.
 
 FEEDBACK
 
-Send feedback, comments and bug reports to:
+Send feedback, comments, bug reports, pizze and postcards to:
 
-Francois Desarmenien <desar@club-internet.fr>
+Francois Desarmenien <francois@fdesar.net>

@@ -148,4 +148,9 @@ Revision history for Perl extension Yapp.
     - New method YYLexer added in Driver.pm, to get a reference to the lexer
       routine
     - In Driver.pm, $check variable was not always cleaned up
-1.02 
+1.02 Mon May  1 13:42:03 CEST 2000
+    - English corrections in README file (thanks to Donald Lancon)
+	- New email address
+	- Updated copyright boundaries
+	- Various cleanups in Grammar.pm and Lalr.pm
+1.03 Sun Nov  5 13:14:49 CEST 2000

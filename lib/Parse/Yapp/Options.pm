@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Options
 #
-# (c) Copyright 1999 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1999-2000 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Options;

@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Lalr
 #
-# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-2000 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Lalr;
@@ -373,47 +373,25 @@ sub DfaTable {
 }
 
 
-#################
-# Private Stuff #
-#################
-
-use vars qw($grammar $states $conflicts);
-#my($grammar,$states,$conflicts);
-
 ####################################
 # Method to build Dfa from Grammar #
 ####################################
 sub _Compile {
 	my($self)=shift;
+	my($grammar,$states);
 
-    $conflicts={    SOLVED  =>  {},
-                    FORCED  =>  {   TOTAL   =>  [ 0, 0 ],
-                                    DETAIL  =>  {}
-                                 }
-                };
-	$states=[];
-    $grammar=$$self{GRAMMAR};
+	$grammar=$self->{GRAMMAR};
 
-    _LR0();
-    _LALR();
+    $states = _LR0($grammar);
 
-    $$self{STATES}=$states;
-    $$self{CONFLICTS}=$conflicts;
-    undef($grammar);
-    undef($states);
-    undef($conflicts);
+    $self->{CONFLICTS} = _LALR($grammar,$states);
+
+    $self->{STATES}=$states;
 }
 
 #########################
 # LR0 States Generation #
 #########################
-my(%closures,%cores);
-
-#%closures=( nterm => ruleset )
-#
-#%cores=( "itemlist" => stateno )
-#
-#hash key "itemlist" is: "ruleno.pos,ruleno.pos" ordered by ruleno,pos
 #
 ###########################
 # General digraph routine #
@@ -477,26 +455,29 @@ where:
 
 =cut
 sub _SetClosures {
-    my(%rel);
+	my($grammar)=@_;
+    my($rel,$closures);
 
     for my $symbol (keys(%{$$grammar{NTERM}})) {
-        $closures{$symbol}=pack('b'.@{$$grammar{RULES}});
+        $closures->{$symbol}=pack('b'.@{$$grammar{RULES}});
 
         for my $ruleno (@{$$grammar{NTERM}{$symbol}}) {
             my($rhs)=$$grammar{RULES}[$ruleno][1];
 
-            vec($closures{$symbol},$ruleno,1)=1;
+            vec($closures->{$symbol},$ruleno,1)=1;
 
                 @$rhs > 0
             and exists($$grammar{NTERM}{$$rhs[0]})
-            and ++$rel{$symbol}{$$rhs[0]};
+            and ++$rel->{$symbol}{$$rhs[0]};
         }
     }
-    _Digraph(\%rel,\%closures);
+    _Digraph($rel,$closures);
+
+	$closures
 }
 
 sub _Closures {
-    my($core)=@_;
+    my($grammar,$core,$closures)=@_;
     my($ruleset)=pack('b'.@{$$grammar{RULES}});
 
     for (@$core) {
@@ -504,8 +485,8 @@ sub _Closures {
         my($rhs)=$$grammar{RULES}[$ruleno][1];
 
             $pos < @$rhs
-        and exists($closures{$$rhs[$pos]})
-        and $ruleset|=$closures{$$rhs[$pos]};
+        and exists($closures->{$$rhs[$pos]})
+        and $ruleset|=$closures->{$$rhs[$pos]};
     }
     [ @$core, map  { [ $_, 0 ] }
               grep { vec($ruleset,$_,1) }
@@ -513,11 +494,11 @@ sub _Closures {
 }
 
 sub _Transitions {
-    my($stateno)=@_;
+    my($grammar,$cores,$closures,$states,$stateno)=@_;
     my($core)=$$states[$stateno]{'CORE'};
     my(%transitions);
 
-    for (@{_Closures($core)}) {
+    for (@{_Closures($grammar,$core,$closures)}) {
         my($ruleno,$pos)=@$_;
         my($rhs)=$$grammar{RULES}[$ruleno][1];
 
@@ -537,13 +518,13 @@ sub _Transitions {
                               @$core);
         my($tostateno);
 
-            exists($cores{$corekey})
+            exists($cores->{$corekey})
         or  do {
             push(@$states,{ 'CORE' => $core });
-            $cores{$corekey}=$#$states;
+            $cores->{$corekey}=$#$states;
         };
 
-        $tostateno=$cores{$corekey};
+        $tostateno=$cores->{$corekey};
         push(@{$$states[$tostateno]{FROM}},$stateno);
 
 			exists($$grammar{TERM}{$_})
@@ -555,29 +536,27 @@ sub _Transitions {
     }
 }
 
-sub _GenerateStates {
+sub _LR0 {
+	my($grammar)=@_;
+	my($states) = [];
     my($stateno);
+    my($closures);  #$closures={ nterm => ruleset,... }
+	my($cores)={};  # { "itemlist" => stateno, ... }
+					# where "itemlist" has the form:
+					# "ruleno.pos,ruleno.pos" ordered by ruleno,pos
 
+    $closures = _SetClosures($grammar);
     push(@$states,{ 'CORE' => [ [ 0, 0 ] ] });
     for($stateno=0;$stateno<@$states;++$stateno) {
-        _Transitions($stateno);
+        _Transitions($grammar,$cores,$closures,$states,$stateno);
     }
-}
 
-sub _LR0 {
-
-    _SetClosures();
-    _GenerateStates();
-    undef(%cores);
-    undef(%closures);
+	$states
 }
 
 #########################################################
 # Add Lookahead tokens where needed to make LALR states #
 #########################################################
-my(@termlst,%terminx,%inconsistent);
-my(%first,%firstsfx,%follows);
-
 =for nobody
     Compute First sets for non-terminal using the following formula:
 
@@ -590,45 +569,40 @@ my(%first,%firstsfx,%follows);
     A l x iff [ A -> X1 X2 .. Xn x alpha ] in P and Xi =>* epsilon, 1 <= i <= n
 =cut
 sub _SetFirst {
-    my(%rel);
+	my($grammar,$termlst,$terminx)=@_;
+    my($rel,$first)=( {}, {} );
 
     for my $symbol (keys(%{$$grammar{NTERM}})) {
-        $first{$symbol}=pack('b'.@termlst);
+        $first->{$symbol}=pack('b'.@$termlst);
 
         RULE:
         for my $ruleno (@{$$grammar{NTERM}{$symbol}}) {
             my($rhs)=$$grammar{RULES}[$ruleno][1];
 
             for (@$rhs) {
-                    exists($terminx{$_})
+                    exists($terminx->{$_})
                 and do {
-                    vec($first{$symbol},$terminx{$_},1)=1;
+                    vec($first->{$symbol},$terminx->{$_},1)=1;
                     next RULE;
                 };
-                ++$rel{$symbol}{$_};
+                ++$rel->{$symbol}{$_};
                     exists($$grammar{NULLABLE}{$_})
                 or  next RULE;
             }
-            vec($first{$symbol},0,1)=1;
+            vec($first->{$symbol},0,1)=1;
         }
     }
-    _Digraph(\%rel,\%first);
-}
+    _Digraph($rel,$first);
 
-sub _InitLALR {
-
-    @termlst=('',keys(%{$$grammar{TERM}}));
-    %terminx= map { ($termlst[$_],$_) } 0..$#termlst;
-
-    _SetFirst();
+	$first
 }
 
 sub _Preds {
-    my($stateno,$len,$preds)=@_;
+    my($states,$stateno,$len,$preds)=@_;
 
     if($len) {
         for (@{$$states[$stateno]{FROM}}) {
-            _Preds($_,$len-1,$preds);
+            _Preds($states,$_,$len-1,$preds);
         }
     }
     else {
@@ -638,35 +612,26 @@ sub _Preds {
 }
 
 sub _FirstSfx {
-    my($ruleno,$pos)=@_;
-    my($first)=pack('b'.@termlst);
+    my($grammar,$firstset,$termlst,$terminx,$ruleno,$pos,$key)=@_;
+    my($first)=pack('b'.@$termlst);
     my($rhs)=$$grammar{RULES}[$ruleno][1];
-    my($key)="$ruleno.$pos";
-
-        exists($firstsfx{$key})
-    and return($firstsfx{$key});
 
     for (;$pos < @$rhs;++$pos) {
-            exists($terminx{$$rhs[$pos]})
+            exists($terminx->{$$rhs[$pos]})
         and do {
-            vec($first,$terminx{$$rhs[$pos]},1)=1;
-            $firstsfx{$key}=$first;
+            vec($first,$terminx->{$$rhs[$pos]},1)=1;
             return($first);
         };
-        $first|=$first{$$rhs[$pos]};
+        $first|=$firstset->{$$rhs[$pos]};
 
             vec($first,0,1)
         and vec($first,0,1)=0;
 
             exists($$grammar{NULLABLE}{$$rhs[$pos]})
-        or  do {
-            $firstsfx{$key}=$first;
-            return($first);
-        };
+        or  return($first);
 
     }
     vec($first,0,1)=1;
-    $firstsfx{$key}=$first;
     $first;
 }
 
@@ -687,7 +652,13 @@ sub _FirstSfx {
                             q in PRED(p,alpha)
 =cut
 sub _ComputeFollows {
-    my(%rel);
+	my($grammar,$states,$termlst)=@_;
+	my($firstset,$terminx);
+	my($inconsistent, $rel, $follows, $sfx)= ( {}, {}, {}, {} );
+
+    %$terminx= map { ($termlst->[$_],$_) } 0..$#$termlst;
+
+    $firstset=_SetFirst($grammar,$termlst,$terminx);
 
     for my $stateno (0..$#$states) {
 		my($state)=$$states[$stateno];
@@ -696,13 +667,13 @@ sub _ComputeFollows {
         and (   @{$$state{ACTIONS}{''}} > 1
              or keys(%{$$state{ACTIONS}}) > 1 )
 		and do {
-			++$inconsistent{$stateno};
+			++$inconsistent->{$stateno};
 
 			for my $ruleno (@{$$state{ACTIONS}{''}}) {
 				my($lhs,$rhs)=@{$$grammar{RULES}[$ruleno]}[0,1];
 
-                for my $predno (keys(%{_Preds($stateno,scalar(@$rhs),{})})) {
-                    ++$rel{"$stateno.$ruleno"}{"$predno.$lhs"};
+                for my $predno (keys(%{_Preds($states,$stateno,scalar(@$rhs),{})})) {
+                    ++$rel->{"$stateno.$ruleno"}{"$predno.$lhs"};
                 }
 			}
 		};
@@ -714,41 +685,53 @@ sub _ComputeFollows {
             my($tostate)=$$states[$$state{GOTOS}{$symbol}];
             my($goto)="$stateno.$symbol";
 
-            $follows{$goto}=pack('b'.@termlst);
+            $follows->{$goto}=pack('b'.@$termlst);
 
             for my $item (@{$$tostate{'CORE'}}) {
                 my($ruleno,$pos)=@$item;
+				my($key)="$ruleno.$pos";
 
-                $follows{$goto}|=_FirstSfx($ruleno,$pos);
+					exists($sfx->{$key})
+				or	$sfx->{$key} = _FirstSfx($grammar,$firstset,
+											 $termlst,$terminx,
+											 $ruleno,$pos,$key);
 
-                    vec($follows{$goto},0,1)
+                $follows->{$goto}|=$sfx->{$key};
+
+                    vec($follows->{$goto},0,1)
                 and do {
                     my($lhs)=$$grammar{RULES}[$ruleno][0];
 
-                    vec($follows{$goto},0,1)=0;
+                    vec($follows->{$goto},0,1)=0;
 
-                    for my $predno (keys(%{_Preds($stateno,$pos-1,{})})) {
-                        ++$rel{$goto}{"$predno.$lhs"};
+                    for my $predno (keys(%{_Preds($states,$stateno,$pos-1,{})})) {
+                        ++$rel->{$goto}{"$predno.$lhs"};
                     }
                 };
             }
         }
     }
-    _Digraph(\%rel,\%follows);
+    _Digraph($rel,$follows);
+
+	($follows,$inconsistent)
 }
 
 sub _ComputeLA {
+	my($grammar,$states)=@_;
+	my($termlst)= [ '',keys(%{$$grammar{TERM}}) ];
 
-    for my $stateno ( keys(%inconsistent ) ) {
+    my($follows,$inconsistent) = _ComputeFollows($grammar,$states,$termlst);
+
+    for my $stateno ( keys(%$inconsistent ) ) {
         my($state)=$$states[$stateno];
         my($conflict);
 
         #NB the sort is VERY important for conflicts resolution order
         for my $ruleno (sort { $a <=> $b }
                         @{$$state{ACTIONS}{''}}) {
-            for my $term ( map { $termlst[$_] } grep {
-                           vec($follows{"$stateno.$ruleno"},$_,1) }
-                           0..$#termlst) {
+            for my $term ( map { $termlst->[$_] } grep {
+                           vec($follows->{"$stateno.$ruleno"},$_,1) }
+                           0..$#$termlst) {
                     exists($$state{ACTIONS}{$term})
                 and ++$conflict;
                 push(@{$$state{ACTIONS}{$term}},-$ruleno);
@@ -756,8 +739,10 @@ sub _ComputeLA {
         }
         delete($$state{ACTIONS}{''});
             $conflict
-        or  delete($inconsistent{$stateno});
+        or  delete($inconsistent->{$stateno});
     }
+
+	$inconsistent
 }
 
 #############################
@@ -765,7 +750,13 @@ sub _ComputeLA {
 #############################
 
 sub _SolveConflicts {
+	my($grammar,$states,$inconsistent)=@_;
     my(%rulesprec,$RulePrec);
+    my($conflicts)={    SOLVED  =>  {},
+                    	FORCED  =>  {   TOTAL   =>  [ 0, 0 ],
+                                    	DETAIL  =>  {}
+                                 	}
+                };
 
     $RulePrec = sub {
         my($ruleno)=@_;
@@ -790,7 +781,7 @@ sub _SolveConflicts {
         undef;
     };
 
-    for my $stateno (keys(%inconsistent)) {
+    for my $stateno (keys(%$inconsistent)) {
         my($state)=$$states[$stateno];
         my($actions)=$$state{ACTIONS};
         my($nbsr,$nbrr);
@@ -870,12 +861,16 @@ sub _SolveConflicts {
         };
 
     }
+
+	$conflicts
 }
 
 ###############################
 # Make default reduce actions #
 ###############################
 sub _SetDefaults {
+	my($states)=@_;
+
     for my $state (@$states) {
         my($actions)=$$state{ACTIONS};
         my(%reduces,$default,$nodefault);
@@ -917,21 +912,15 @@ sub _SetDefaults {
 }
 
 sub _LALR {
+	my($grammar,$states) = @_;
+	my($conflicts,$inconsistent);
 
-    _InitLALR();
-    _ComputeFollows();
-    _ComputeLA();
+    $inconsistent = _ComputeLA($grammar,$states);
 
-    undef(@termlst);
-    undef(%terminx);
-    undef(%first);
-    undef(%firstsfx);
-    undef(%follows);
+    $conflicts = _SolveConflicts($grammar,$states,$inconsistent);
+    _SetDefaults($states);
 
-    _SolveConflicts();
-    _SetDefaults();
-
-    undef(%inconsistent);
+	$conflicts
 }
 
 

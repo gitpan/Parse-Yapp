@@ -1,6 +1,6 @@
 ####################################################################
 #
-#    This file was generated using Parse::Yapp version 1.01.
+#    This file was generated using Parse::Yapp version 1.03.
 #
 #        Don't edit this file, use source file instead.
 #
@@ -15,7 +15,7 @@ use strict;
 use Parse::Yapp::Driver;
 
 #line 1 "YappParse.yp"
-# (c) Copyright Francois Desarmenien 1998-1999, all rights reserved.
+# (c) Copyright Francois Desarmenien 1998-2000, all rights reserved.
 # (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
 #
 # Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file
@@ -41,228 +41,228 @@ sub new {
         ref($class)
     and $class=ref($class);
 
-    my($self)=$class->SUPER::new( yyversion => '1.01',
+    my($self)=$class->SUPER::new( yyversion => '1.03',
                                   yystates =>
 [
 	{#State 0
 		ACTIONS => {
-			'TOKEN' => 1,
-			'TYPE' => 2,
 			"%%" => -6,
-			"\n" => 5,
-			'EXPECT' => 6,
-			'UNION' => 7,
-			'ASSOC' => 8,
+			'HEADCODE' => 3,
+			'UNION' => 2,
+			'TOKEN' => 5,
+			'ASSOC' => 7,
+			'START' => 6,
 			'error' => 9,
-			'HEADCODE' => 12,
-			'START' => 14
+			'TYPE' => 10,
+			"\n" => 11,
+			'EXPECT' => 13
 		},
 		GOTOS => {
-			'decl' => 4,
-			'yapp' => 10,
-			'head' => 3,
-			'decls' => 11,
-			'headsec' => 13
+			'head' => 1,
+			'decls' => 12,
+			'yapp' => 4,
+			'decl' => 14,
+			'headsec' => 8
 		}
 	},
 	{#State 1
 		ACTIONS => {
-			"<" => 15
+			'error' => 19,
+			"%%" => 16,
+			'IDENT' => 18
 		},
-		DEFAULT => -19,
 		GOTOS => {
-			'typedecl' => 16
+			'rules' => 15,
+			'rulesec' => 20,
+			'body' => 17
 		}
 	},
 	{#State 2
 		ACTIONS => {
-			"<" => 15
-		},
-		DEFAULT => -19,
-		GOTOS => {
-			'typedecl' => 17
+			'CODE' => 21
 		}
 	},
 	{#State 3
 		ACTIONS => {
-			"%%" => 20,
-			'error' => 21,
-			'IDENT' => 19
-		},
-		GOTOS => {
-			'rules' => 22,
-			'rulesec' => 18,
-			'body' => 23
+			"\n" => 22
 		}
 	},
 	{#State 4
-		DEFAULT => -9
+		ACTIONS => {
+			'' => 23
+		}
 	},
 	{#State 5
-		DEFAULT => -10
+		ACTIONS => {
+			"<" => 25
+		},
+		DEFAULT => -19,
+		GOTOS => {
+			'typedecl' => 24
+		}
 	},
 	{#State 6
 		ACTIONS => {
-			'NUMBER' => 24
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'ident' => 27
 		}
 	},
 	{#State 7
 		ACTIONS => {
-			'CODE' => 25
+			"<" => 25
+		},
+		DEFAULT => -19,
+		GOTOS => {
+			'typedecl' => 28
 		}
 	},
 	{#State 8
 		ACTIONS => {
-			"<" => 15
-		},
-		DEFAULT => -19,
-		GOTOS => {
-			'typedecl' => 26
+			"%%" => 29
 		}
 	},
 	{#State 9
 		ACTIONS => {
-			"\n" => 27
+			"\n" => 30
 		}
 	},
 	{#State 10
 		ACTIONS => {
-			'' => 28
+			"<" => 25
+		},
+		DEFAULT => -19,
+		GOTOS => {
+			'typedecl' => 31
 		}
 	},
 	{#State 11
-		ACTIONS => {
-			'TOKEN' => 1,
-			'TYPE' => 2,
-			"%%" => -7,
-			"\n" => 5,
-			'EXPECT' => 6,
-			'UNION' => 7,
-			'ASSOC' => 8,
-			'error' => 9,
-			'HEADCODE' => 12,
-			'START' => 14
-		},
-		GOTOS => {
-			'decl' => 29
-		}
+		DEFAULT => -10
 	},
 	{#State 12
 		ACTIONS => {
-			"\n" => 30
+			"%%" => -7,
+			'HEADCODE' => 3,
+			'UNION' => 2,
+			'TOKEN' => 5,
+			'ASSOC' => 7,
+			'START' => 6,
+			'error' => 9,
+			'TYPE' => 10,
+			"\n" => 11,
+			'EXPECT' => 13
+		},
+		GOTOS => {
+			'decl' => 32
 		}
 	},
 	{#State 13
 		ACTIONS => {
-			"%%" => 31
+			'NUMBER' => 33
 		}
 	},
 	{#State 14
-		ACTIONS => {
-			'IDENT' => 32
-		},
-		GOTOS => {
-			'ident' => 33
-		}
+		DEFAULT => -9
 	},
 	{#State 15
-		ACTIONS => {
-			'IDENT' => 34
-		}
+		DEFAULT => -28
 	},
 	{#State 16
-		ACTIONS => {
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		GOTOS => {
-			'ident' => 35,
-			'symlist' => 36,
-			'symbol' => 37
-		}
+		DEFAULT => -26
 	},
 	{#State 17
 		ACTIONS => {
-			'IDENT' => 32
+			'TAILCODE' => 34
 		},
+		DEFAULT => -45,
 		GOTOS => {
-			'identlist' => 39,
-			'ident' => 40
+			'tail' => 35
 		}
 	},
 	{#State 18
 		ACTIONS => {
-			"%%" => 41,
-			'error' => 21,
-			'IDENT' => 19
-		},
-		GOTOS => {
-			'rules' => 42
+			":" => 36
 		}
 	},
 	{#State 19
 		ACTIONS => {
-			":" => 43
+			";" => 37
 		}
 	},
 	{#State 20
-		DEFAULT => -26
+		ACTIONS => {
+			'error' => 19,
+			"%%" => 39,
+			'IDENT' => 18
+		},
+		GOTOS => {
+			'rules' => 38
+		}
 	},
 	{#State 21
 		ACTIONS => {
-			";" => 44
+			"\n" => 40
 		}
 	},
 	{#State 22
-		DEFAULT => -28
+		DEFAULT => -14
 	},
 	{#State 23
-		ACTIONS => {
-			'TAILCODE' => 45
-		},
-		DEFAULT => -45,
-		GOTOS => {
-			'tail' => 46
-		}
+		DEFAULT => -0
 	},
 	{#State 24
 		ACTIONS => {
-			"\n" => 47
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'symlist' => 43,
+			'ident' => 44,
+			'symbol' => 42
 		}
 	},
 	{#State 25
 		ACTIONS => {
-			"\n" => 48
+			'IDENT' => 45
 		}
 	},
 	{#State 26
-		ACTIONS => {
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		GOTOS => {
-			'ident' => 35,
-			'symlist' => 49,
-			'symbol' => 37
-		}
+		DEFAULT => -4
 	},
 	{#State 27
-		DEFAULT => -18
+		ACTIONS => {
+			"\n" => 46
+		}
 	},
 	{#State 28
-		DEFAULT => -0
+		ACTIONS => {
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'symlist' => 47,
+			'ident' => 44,
+			'symbol' => 42
+		}
 	},
 	{#State 29
-		DEFAULT => -8
-	},
-	{#State 30
-		DEFAULT => -14
-	},
-	{#State 31
 		DEFAULT => -5
 	},
+	{#State 30
+		DEFAULT => -18
+	},
+	{#State 31
+		ACTIONS => {
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'ident' => 48,
+			'identlist' => 49
+		}
+	},
 	{#State 32
-		DEFAULT => -4
+		DEFAULT => -8
 	},
 	{#State 33
 		ACTIONS => {
@@ -270,211 +270,211 @@ sub new {
 		}
 	},
 	{#State 34
-		ACTIONS => {
-			">" => 51
-		}
+		DEFAULT => -46
 	},
 	{#State 35
-		DEFAULT => -3
+		DEFAULT => -1
 	},
 	{#State 36
 		ACTIONS => {
-			"\n" => 53,
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		GOTOS => {
-			'ident' => 35,
-			'symbol' => 52
-		}
-	},
-	{#State 37
-		DEFAULT => -22
-	},
-	{#State 38
-		DEFAULT => -2
-	},
-	{#State 39
-		ACTIONS => {
-			"\n" => 55,
-			'IDENT' => 32
-		},
-		GOTOS => {
-			'ident' => 54
-		}
-	},
-	{#State 40
-		DEFAULT => -24
-	},
-	{#State 41
-		DEFAULT => -25
-	},
-	{#State 42
-		DEFAULT => -27
-	},
-	{#State 43
-		ACTIONS => {
-			'CODE' => 61,
-			'IDENT' => 32,
-			'LITERAL' => 38
+			'CODE' => 57,
+			'LITERAL' => 41,
+			'IDENT' => 26
 		},
 		DEFAULT => -35,
 		GOTOS => {
-			'rule' => 60,
-			'rhss' => 56,
-			'rhselt' => 57,
-			'code' => 62,
-			'ident' => 35,
-			'rhs' => 63,
-			'rhselts' => 58,
+			'rhselts' => 56,
+			'rule' => 51,
+			'code' => 52,
+			'rhs' => 53,
+			'ident' => 44,
+			'rhselt' => 58,
+			'rhss' => 55,
+			'symbol' => 54
+		}
+	},
+	{#State 37
+		DEFAULT => -30
+	},
+	{#State 38
+		DEFAULT => -27
+	},
+	{#State 39
+		DEFAULT => -25
+	},
+	{#State 40
+		DEFAULT => -15
+	},
+	{#State 41
+		DEFAULT => -2
+	},
+	{#State 42
+		DEFAULT => -22
+	},
+	{#State 43
+		ACTIONS => {
+			"\n" => 60,
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'ident' => 44,
 			'symbol' => 59
 		}
 	},
 	{#State 44
-		DEFAULT => -30
+		DEFAULT => -3
 	},
 	{#State 45
-		DEFAULT => -46
+		ACTIONS => {
+			">" => 61
+		}
 	},
 	{#State 46
-		DEFAULT => -1
+		DEFAULT => -13
 	},
 	{#State 47
-		DEFAULT => -17
+		ACTIONS => {
+			"\n" => 62,
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'ident' => 44,
+			'symbol' => 59
+		}
 	},
 	{#State 48
-		DEFAULT => -15
+		DEFAULT => -24
 	},
 	{#State 49
 		ACTIONS => {
-			"\n" => 64,
-			'IDENT' => 32,
-			'LITERAL' => 38
+			"\n" => 63,
+			'IDENT' => 26
 		},
 		GOTOS => {
-			'ident' => 35,
-			'symbol' => 52
+			'ident' => 64
 		}
 	},
 	{#State 50
-		DEFAULT => -13
+		DEFAULT => -17
 	},
 	{#State 51
-		DEFAULT => -20
-	},
-	{#State 52
-		DEFAULT => -21
-	},
-	{#State 53
-		DEFAULT => -11
-	},
-	{#State 54
-		DEFAULT => -23
-	},
-	{#State 55
-		DEFAULT => -16
-	},
-	{#State 56
-		ACTIONS => {
-			";" => 65,
-			"|" => 66
-		}
-	},
-	{#State 57
-		DEFAULT => -38
-	},
-	{#State 58
-		ACTIONS => {
-			'CODE' => 61,
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		DEFAULT => -36,
-		GOTOS => {
-			'rhselt' => 67,
-			'code' => 62,
-			'ident' => 35,
-			'symbol' => 59
-		}
-	},
-	{#State 59
-		DEFAULT => -39
-	},
-	{#State 60
 		DEFAULT => -32
 	},
-	{#State 61
-		DEFAULT => -44
-	},
-	{#State 62
+	{#State 52
 		DEFAULT => -40
 	},
-	{#State 63
+	{#State 53
 		ACTIONS => {
-			'PREC' => 68
+			'PREC' => 66
 		},
 		DEFAULT => -34,
 		GOTOS => {
-			'prec' => 69
+			'prec' => 65
 		}
 	},
-	{#State 64
+	{#State 54
+		DEFAULT => -39
+	},
+	{#State 55
+		ACTIONS => {
+			"|" => 68,
+			";" => 67
+		}
+	},
+	{#State 56
+		ACTIONS => {
+			'CODE' => 57,
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		DEFAULT => -36,
+		GOTOS => {
+			'code' => 52,
+			'ident' => 44,
+			'rhselt' => 69,
+			'symbol' => 54
+		}
+	},
+	{#State 57
+		DEFAULT => -44
+	},
+	{#State 58
+		DEFAULT => -38
+	},
+	{#State 59
+		DEFAULT => -21
+	},
+	{#State 60
+		DEFAULT => -11
+	},
+	{#State 61
+		DEFAULT => -20
+	},
+	{#State 62
 		DEFAULT => -12
 	},
+	{#State 63
+		DEFAULT => -16
+	},
+	{#State 64
+		DEFAULT => -23
+	},
 	{#State 65
-		DEFAULT => -29
-	},
-	{#State 66
 		ACTIONS => {
-			'CODE' => 61,
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		DEFAULT => -35,
-		GOTOS => {
-			'rule' => 70,
-			'rhselt' => 57,
-			'code' => 62,
-			'ident' => 35,
-			'rhs' => 63,
-			'rhselts' => 58,
-			'symbol' => 59
-		}
-	},
-	{#State 67
-		DEFAULT => -37
-	},
-	{#State 68
-		ACTIONS => {
-			'IDENT' => 32,
-			'LITERAL' => 38
-		},
-		GOTOS => {
-			'ident' => 35,
-			'symbol' => 71
-		}
-	},
-	{#State 69
-		ACTIONS => {
-			'CODE' => 61
+			'CODE' => 57
 		},
 		DEFAULT => -42,
 		GOTOS => {
-			'code' => 73,
-			'epscode' => 72
+			'code' => 70,
+			'epscode' => 71
 		}
 	},
+	{#State 66
+		ACTIONS => {
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		GOTOS => {
+			'ident' => 44,
+			'symbol' => 72
+		}
+	},
+	{#State 67
+		DEFAULT => -29
+	},
+	{#State 68
+		ACTIONS => {
+			'CODE' => 57,
+			'LITERAL' => 41,
+			'IDENT' => 26
+		},
+		DEFAULT => -35,
+		GOTOS => {
+			'rhselts' => 56,
+			'rule' => 73,
+			'code' => 52,
+			'rhs' => 53,
+			'ident' => 44,
+			'rhselt' => 58,
+			'symbol' => 54
+		}
+	},
+	{#State 69
+		DEFAULT => -37
+	},
 	{#State 70
-		DEFAULT => -31
+		DEFAULT => -43
 	},
 	{#State 71
-		DEFAULT => -41
-	},
-	{#State 72
 		DEFAULT => -33
 	},
+	{#State 72
+		DEFAULT => -41
+	},
 	{#State 73
-		DEFAULT => -43
+		DEFAULT => -31
 	}
 ],
                                   yyrules  =>

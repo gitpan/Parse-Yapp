@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Grammar
 #
-# (c) Copyright 1998-1999 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-2000 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Grammar;
@@ -14,14 +14,12 @@ use strict;
 use Parse::Yapp::Options;
 use Parse::Yapp::Parse;
 
-my($head,$tail,$rules,$nterm,$term,$nullable,$precterm,$syms,$start,$expect);
-my($ufrules,$ufnterm,$reachable);
-
 ###############
 # Constructor #
 ###############
 sub new {
     my($class)=shift;
+    my($values);
 
     my($self)=$class->SUPER::new(@_);
 
@@ -30,29 +28,11 @@ sub new {
         defined($self->Option('input'))
     or  croak "No input grammar";
 
-        ($head,$tail,$rules,$nterm,$term,
-         $nullable,$precterm,$syms,$start,$expect)
-    =  @{$parser->Parse($self->Option('input'))}
-        {'HEAD','TAIL','RULES','NTERM','TERM',
-         'NULL','PREC','SYMS','START','EXPECT','OUTPUT'};
+    $values = $parser->Parse($self->Option('input'));
 
     undef($parser);
 
-    $$self{GRAMMAR}=_ReduceGrammar();
-
-    undef($ufrules);
-    undef($ufnterm);
-    undef($reachable);
-    undef($head);
-    undef($tail);
-    undef($rules);
-    undef($nterm);
-    undef($term);
-    undef($nullable);
-    undef($precterm);
-    undef($syms);
-    undef($start);
-    undef($expect);
+    $$self{GRAMMAR}=_ReduceGrammar($values);
 
         ref($class)
     and $class=ref($class);
@@ -229,6 +209,8 @@ sub Tail {
 #################
 
 sub _UsefulRules {
+    my($rules,$nterm) = @_;
+    my($ufrules,$ufnterm);
     my($done);
 
     $ufrules=pack('b'.@$rules);
@@ -266,12 +248,13 @@ sub _UsefulRules {
 
     }until($done);
 
-        exists($$ufnterm{$start})
-    or  die "*Fatal* Start symbol $start derives nothing, at eof\n";
+    ($ufrules,$ufnterm)
 
 }#_UsefulRules
 
 sub _Reachable {
+    my($rules,$nterm,$term,$ufrules,$ufnterm)=@_;
+    my($reachable);
     my(@fifo)=( 0 );
 
     $reachable={ '$start' => 1 }; #$start is always reachable
@@ -295,9 +278,13 @@ sub _Reachable {
             push(@fifo, grep { vec($ufrules,$_,1) } @{$$nterm{$sym}});
         }
     }
+
+    $reachable
+
 }#_Reachable
 
 sub _SetNullable {
+    my($rules,$term,$nullable) = @_;
     my(@nrules);
     my($done);
 
@@ -337,37 +324,42 @@ sub _SetNullable {
 }
 
 sub _ReduceGrammar {
-    my($grammar)={};
+    my($values)=@_;
+    my($ufrules,$ufnterm,$reachable);
+    my($grammar)={ HEAD => $values->{HEAD},
+                   TAIL => $values->{TAIL},
+                   EXPECT => $values->{EXPECT} };
+    my($rules,$nterm,$term) =  @$values {'RULES', 'NTERM', 'TERM'};
 
-    _UsefulRules();
-    _Reachable();
+    ($ufrules,$ufnterm) = _UsefulRules($rules,$nterm);
 
-    $$grammar{HEAD}=$head;
-    $$grammar{TAIL}=$tail;
-    $$grammar{EXPECT}=$expect;
+        exists($$ufnterm{$values->{START}})
+    or  die "*Fatal* Start symbol $values->{START} derives nothing, at eof\n";
+
+    $reachable = _Reachable($rules,$nterm,$term,$ufrules,$ufnterm);
 
     $$grammar{TERM}{chr(0)}=undef;
     for my $sym (keys %$term) {
             (   exists($$reachable{$sym})
-             or exists($$precterm{$sym}) )
+             or exists($values->{PREC}{$sym}) )
         and do {
             $$grammar{TERM}{$sym}
                 = defined($$term{$sym}[0]) ? $$term{$sym} : undef;
             next;
         };
-        push(@{$$grammar{UUTERM}},[ $sym, $$syms{$sym} ]);
+        push(@{$$grammar{UUTERM}},[ $sym, $values->{SYMS}{$sym} ]);
     }
 
     $$grammar{NTERM}{'$start'}=[];
     for my $sym (keys %$nterm) {
             exists($$reachable{$sym})
         and do {
-                exists($$nullable{$sym})
+                exists($values->{NULL}{$sym})
             and ++$$grammar{NULLABLE}{$sym};
             $$grammar{NTERM}{$sym}=[];
             next;
         };
-        push(@{$$grammar{UUNTERM}},[ $sym, $$syms{$sym} ]);
+        push(@{$$grammar{UUNTERM}},[ $sym, $values->{SYMS}{$sym} ]);
     }
 
     for my $ruleno (0..$#$rules) {
@@ -381,11 +373,7 @@ sub _ReduceGrammar {
         push(@{$$grammar{UURULES}},[ @{$$rules[$ruleno]}[0,1] ]);
     }
 
-    $term=$$grammar{TERM};
-    $nullable=$$grammar{NULLABLE};
-    $rules=$$grammar{RULES};
-
-    _SetNullable();
+    _SetNullable(@$grammar{'RULES', 'TERM', 'NULLABLE'});
 
     $grammar;
 }#_ReduceGrammar
