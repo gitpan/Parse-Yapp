@@ -1,8 +1,16 @@
 #
 # Module Parse::Yapp::Driver
 #
+# This module is part of the Parse::Yapp package available on your
+# nearest CPAN
+#
+# Any use of this module in a standalone parser make the included
+# text under the same copyright as the Parse::Yapp module itself.
+#
+# This notice should remain unchanged.
+#
 # (c) Copyright 1998 Francois Desarmenien, all rights reserved.
-# (see the pod text in Yapp module for use and distribution rights)
+# (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 
 package Parse::Yapp::Driver;
@@ -11,14 +19,13 @@ require 5.004;
 
 use strict;
 
-use vars qw ( $VERSION $COMPATIBLE );
+use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '0.15';
+$VERSION = '0.16';
 $COMPATIBLE = '0.07';
+$FILENAME=__FILE__;
 
 use Carp;
-
-my($loaded,$dbloaded)=(0,0);
 
 #Known parameters, all starting with YY (leading YY will be discarded)
 my(%params)=(YYLEX => 'CODE', 'YYERROR' => 'CODE', YYVERSION => '',
@@ -59,27 +66,10 @@ sub YYParse {
 	_CheckParams( \@params, \%params, \@_, $self );
 
 	if($$self{DEBUG}) {
-			$dbloaded
-		or	do {
-			my($datapos)=tell(DATA);
-
-			++$dbloaded;
-			eval 'sub _DBParse{'.
-				 join('',map { $_=~/\A(?:#DBG>)?(.*\Z)/; "$1\n" } <DATA>).
-				 '}';
-			seek(DATA,$datapos,0);
-		};
-		$self->_DBParse();
+		_DBLoad();
+		eval '$self->_DBParse()';#Do not create stab entry on compile
 	}
 	else {
-			$loaded
-		or	do {
-			my($datapos)=tell(DATA);
-
-			++$loaded;
-			eval 'sub _Parse{'.join('',<DATA>).'}';
-			seek(DATA,$datapos,0);
-		};
 		$self->_Parse();
 	}
 
@@ -191,9 +181,33 @@ sub _Error {
 	print "Parse error.\n";
 }
 
-1;
+sub _DBLoad {
+	{
+		no strict 'refs';
 
-__DATA__
+			exists(${__PACKAGE__.'::'}{_DBParse})#Already loaded ?
+		and	return;
+	}
+	my($fname)=__FILE__;
+	my(@drv);
+	open(DRV,"<$fname") or die "Report this as a BUG: Cannot open $fname";
+	while(<DRV>) {
+                	/^\s*sub\s+_Parse\s*{\s*$/ .. /^\s*}\s*#\s*_Parse\s*$/
+        	and     do {
+                	s/^#DBG>//;
+                	push(@drv,$_);
+        	}
+	}
+	close(DRV);
+
+	$drv[0]=~s/_P/_DBP/;
+	eval join('',@drv);
+}
+
+#Note that for loading debugging version of the driver,
+#this file will be parsed from 'sub _Parse' up to '}#_Parse' inclusive.
+#So, DO NOT remove comment at end of sub !!!
+sub _Parse {
     my($self)=shift;
 
 	my($rules,$states,$lex,$error)
@@ -430,3 +444,9 @@ __DATA__
 
     #never reached
 	croak("Error in driver logic. Please, report it as a BUG");
+
+}#_Parse
+#DO NOT remove comment
+
+1;
+

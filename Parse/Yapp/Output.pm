@@ -16,13 +16,24 @@ use strict;
 
 use Carp;
 
+sub _CopyDriver {
+	my($text)='#Included Parse/Yapp/Driver.pm file'.('-' x 40)."\n";
+		open(DRV,$Parse::Yapp::Driver::FILENAME)
+	or	die "BUG: could not open $Parse::Yapp::Driver::FILENAME";
+	$text.="{\n".join('',<DRV>)."}\n";
+	close(DRV);
+	$text.='#End of include'.('-' x 50)."\n";
+}
+
 sub Output {
     my($self)=shift;
-    my($package)=@_;
-	my($head,$states,$rules,$tail);
+    my($package,$standalone)=@_;
+    my($head,$states,$rules,$tail,$driver);
     my($text);
-	my($version)=$Parse::Yapp::Driver::VERSION;
+    my($version)=$Parse::Yapp::Driver::VERSION;
     my($datapos);
+
+	$driver='use Parse::Yapp::Driver;';
 
         defined($package)
     or $package='Parse::Yapp::Default';
@@ -31,6 +42,9 @@ sub Output {
 	$rules=$self->RulesTable();
 	$states=$self->DfaTable();
 	$tail= $self->Tail();
+
+		$standalone
+	and	$driver=_CopyDriver();
 
     $datapos=tell(DATA);
 	while(defined($_=<DATA>)) {
@@ -61,8 +75,7 @@ use vars qw ( @ISA );
 use strict;
 
 @ISA= qw ( Parse::Yapp::Driver );
-
-use Parse::Yapp::Driver;
+<<$driver>>
 
 <<$head>>
 

@@ -46,8 +46,8 @@ Parse::Yapp - Perl extension for generating and using LALR parsers.
 =head1 DESCRIPTION
 
 Parse::Yapp (Yet Another Perl Parser compiler) is a collection of modules
-that let you generate and use yacc like parsers with perl object oriented
-interface.
+that let you generate and use yacc like thread safe parsers with perl objec
+oriented interface.
 
 The script yapp.pl is a front-end to the Parse::Yapp module and let you
 easily create a Perl OO parser from an input grammar file.
@@ -316,7 +316,7 @@ token, or the literal value) from a simple scalar value to any
 complex reference, as the parsing driver never use it but to call
 semantic actions:
 
-    ( NUMBER, $num )
+    ( 'NUMBER', $num )
 or
     ( '>=', '>=' )
 or
@@ -403,6 +403,21 @@ To have a full debugging ouput, use
 
 Debugging output is sent to STDERR, and be aware that it can produce
 C<huge> outputs.
+
+=item C<Standalone Parsers>
+
+By default, the parser modules generated will need the Parse::Yapp
+module installed on the system to run. They use the Parse::Yapp::Driver
+which can be safely shared between parsers in the same script.
+
+In the case you'd prefer to have a standalone module generated, use
+the C<-s> switch with yapp.pl: this will automagically copy the driver
+code into your module so you can use/distribute it without the need
+of the Parse::Yapp module, making it really a C<Standalone Parser>.
+
+If you do so, please remember to include Parse::Yapp's copyright notice
+in your main module copyright, so others can know about Parse::Yapp module.
+
 
 =back
 

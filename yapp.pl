@@ -14,19 +14,21 @@ use Parse::Yapp;
 
 use strict;
 
-use vars qw ( $opt_m $opt_v $opt_o $opt_h );
+use vars qw ( $opt_m $opt_v $opt_o $opt_h $opt_s );
 
 sub Usage {
 	my($prog)=(fileparse($0,'\..*'))[0];
 	die <<EOF;
 Usage:
-	$prog [-m module] [-v] [-o filename] grammar[.yp]
+	$prog [-m module] [-v] [-s] [-o filename] grammar[.yp]
 or	$prog -h
 
     -m module   Give your parser module the name <module>
                 default is <grammar>
 
     -v          Create a file <grammar>.output describing your parser
+
+    -s          Create a standalone module in which the driver is included
 
     -o outfile  Create the file <outfile> for your parser module
                 Default is <grammar>.pm
@@ -37,7 +39,7 @@ or	$prog -h
 EOF
 }
 
-	getopts('hvm:o:') and not $opt_h and @ARGV == 1
+	getopts('hvsm:o:') and not $opt_h and @ARGV == 1
 or	Usage;
 
 my($filename)=$ARGV[0];
@@ -97,6 +99,6 @@ and	$outfile=$opt_o;
 	open(OUT,">$outfile")
 or	die "Cannot open $outfile for writing.\n";
 
-print OUT $parser->Output($package);
+print OUT $parser->Output($package,$opt_s);
 
 close(OUT);

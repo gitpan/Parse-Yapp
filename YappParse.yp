@@ -144,6 +144,7 @@ body:   rulesec '%%'
 
                 $$rules[0]=[ '$start', [ $start, chr(0) ], undef, undef ];
             }
+    |   '%%'    { _SyntaxError(2,"No rules in input grammar",$_[1][1]); }
 ;
 
 rulesec:  rulesec rules #default action
@@ -207,7 +208,8 @@ code:		CODE	    { $_[1] }
 
 # Tail section:
 
-tail:    TAILCODE    { $tail=$_[1][0] }
+tail:       /*empty*/
+        |   TAILCODE    { $tail=$_[1][0] }
 ;
 
 %%

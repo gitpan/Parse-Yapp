@@ -60,3 +60,16 @@ Revision history for Perl extension Yapp.
     - Bug in _ReduceGrammar: used $ruleno instead of $#{$grammar{RULES}}
       making no-terminal pointing to wrong rhs if useless rules.
 0.15  Mon Aug 17 11:39:01 CEST 1998
+    - YappParse.yp modified to allow empty tail section (not even \n)
+    - YappParse.yp modified to diagnose lack of rules in grammar section
+    - Driver.pm has been modified so there is no performance impact at
+      loading when debugging is not used and to insure thread safety at
+      runtime
+    - Output.pm can now include driver code into the parser module to
+      make it 'standalone'
+    - Copyright notice in Driver has been changed to reflect its use
+      if included in a standalone parser
+    - A -s option has been added to yapp.pl to generate standalone parsers
+    - Usage in yapp.pl reflects this new option 
+    - Updated Yapp.pm pod to add Standalone Parsers item
+0.16  Sun Oct 25 12:36:05 CET 1998
