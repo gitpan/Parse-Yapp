@@ -282,8 +282,15 @@ or ParseYapp.yp files in the distribution for some examples).
 That's how you can make you parser module reentrant: all of your
 module states and variables are held inside the parser object.
 
-If no action is specified for a rule, a default action is run, which
-returns the first parameter:
+Note: unfortunatly, method calls in Perl have a lot of overhead,
+      and when YYData is used, it may be called a huge number
+      of times. If your are not a *real* purist and efficiency
+      is your concern, you may access directly the user-space
+      in the object: $parser->{USER} wich is a reference to an
+      anonymous hash array, and then benchmark.
+
+If no action is specified for a rule, the equivalant of a default
+action is run, which returns the first parameter:
 
    { $_[1] }
 

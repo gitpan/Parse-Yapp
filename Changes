@@ -129,3 +129,10 @@ Revision history for Perl extension Yapp.
     - Corrected a bug in Grammar.pm, to make useful rules useless if their lhs
       are not reachable.
 0.31 Fri May  7 21:06:32 CEST 1999
+    - Won some milliseconds in Driver.pm by not calling an anonymous sub if
+      there is no semantic action: just get the first semantic value as result
+    - Added a patch from Andy Wardley (thanks) which allow people to specify
+      their own template rather than the standard one from Output.pm
+    - Added option C<-b> to yapp to specify a 'shebang'. If value is an empty
+      string, $Config{perlpath} is used.
+1.00 Wed Oct 20 17:52:38 CEST 1999

@@ -21,7 +21,7 @@ use strict;
 
 use vars qw ( $VERSION $COMPATIBLE $FILENAME );
 
-$VERSION = '0.31';
+$VERSION = '1.00';
 $COMPATIBLE = '0.07';
 $FILENAME=__FILE__;
 
@@ -321,9 +321,6 @@ sub _Parse {
                 $act
             or  $self->YYAccept();
 
-				$code
-			or	$code = sub { $_[1] };
-
             $$dotpos=$len;
 
                 unpack('A1',$lhs) eq '@'    #In line rule
@@ -339,7 +336,8 @@ sub _Parse {
                         :   ();
 
 
-            $semval = &$code( $self, @sempar );
+            $semval = $code ? &$code( $self, @sempar )
+                            : @sempar ? $sempar[0] : undef;
 
             splice(@$stack,-$len,$len);
 

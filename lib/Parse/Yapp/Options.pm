@@ -46,6 +46,9 @@ my(%known_options)= (
     input       =>  {
         ''      =>  "Input text of grammar"
     },
+    template    => {
+        ''      =>  "Template text for generating grammar file"
+    },
 );
 
 my(%default_options)= (
@@ -54,7 +57,9 @@ my(%default_options)= (
     inputfile => undef,
     classname   => 'Parser',
     standalone => 0,
-    input => undef
+    input => undef,
+    template => undef,
+    shebang => undef,
 );
 
 my(%actions)= (

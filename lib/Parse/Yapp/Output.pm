@@ -34,16 +34,16 @@ sub Output {
     my($head,$states,$rules,$tail,$driver);
     my($version)=$Parse::Yapp::Driver::VERSION;
     my($datapos);
-    my($text)=<<'EOT';
-#########################################################################
+    my($text)=$self->Option('template') ||<<'EOT';
+####################################################################
 #
-#      This file was generated using Parse::Yapp version <<$version>>.
+#    This file was generated using Parse::Yapp version <<$version>>.
 #
-#          Don't edit this file, use source file instead.
+#        Don't edit this file, use source file instead.
 #
-#               ANY CHANGE MADE HERE WILL BE LOST !
+#             ANY CHANGE MADE HERE WILL BE LOST !
 #
-#########################################################################
+####################################################################
 package <<$package>>;
 use vars qw ( @ISA );
 use strict;

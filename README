@@ -5,34 +5,42 @@ Compiles yacc-like LALR grammars to generate Perl OO parser modules.
 
 COPYRIGHT
 
-(c) 1998 Francois Desarmenien, all rights reserved.
+(c) 1998-99 Francois Desarmenien, all rights reserved.
 (see the Copyright section in Yapp.pm for usage and distribution rights)
 
 IMPORTANT NOTES
 
-THIS IS BETA SOFTWARE.
+This is production release version 1.0 of Parse::Yapp.
 
-Though it has been tested a lot, there are probably bugs in it ;-)
+As those last month I've had little time to invest in its development
+and it seems pretty stable now, having been in BETA for more than six
+monthes without any bug reports, I decided to pass it in 'production'
+status.
 
-The BETA status does not reflect the quality of the code, but the possible
-changes in the generated parser modules.
+While I'll will maintain and improve it through your comments and bug
+reports, further developments will go in another version numbering
+scheme I haven't choosed yet (probably "a la linux", with even sub-numbers
+beeing production. Advises are, of course, very welcome).
 
-I need FEEDBACK for every problem or bug you could encounter so I can fix
-them in the next release. Comments are welcome too.
-But I also need FEEDBACK if you use it and have it work fine so I can step
-to production releases. Just drop me a mail.
+Note that with future versions, the interface *may* change and be
+incompatible with previous version, although I'll try hard not to break
+backward compatibility, I'll always choose efficiency as a first
+criteria.
 
 The Parse::Yapp pod section is the main documentation and it assumes
 you already have a good knowledge of yacc. If not, I suggest the GNU
 Bison manual which is a very good tutorial to LALR parsing and yacc's
 grammar syntax.
 
-The documentation is only a draft and should be rewritten (I think).
+The yapp frontend has now its own documentation using either
+'perldoc yapp' or (on systems with man pages) 'man yapp'.
+
+The documentation is (still) only a draft and should be rewritten (I think).
 Any help on this issue would be very welcome.
 
 DESCRIPTION
 
-This is the beta release 0.31 of the Parse::Yapp parser generator.
+This is production release 1.0 of the Parse::Yapp parser generator.
 
 It lets you create Perl OO fully reentrant LALR(1) parser
 modules (see the Yapp.pm pod pages for more details) and has
