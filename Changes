@@ -154,3 +154,8 @@ Revision history for Perl extension Yapp.
 	- Updated copyright boundaries
 	- Various cleanups in Grammar.pm and Lalr.pm
 1.03 Sun Nov  5 13:14:49 CEST 2000
+    - In Lalr.pm, _Preds, recursivity removed
+    - English corrections in Parse::Yapp pod section (thanks to Julian Trudy)
+	- Updated copyright boundaries
+    - Stress test added (compile and check a full C++ grammar)
+1.04 Mon Feb 12 16:46:37 CET 2001

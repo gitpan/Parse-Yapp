@@ -14,3 +14,4 @@ yapp
 Calc.yp
 t/base.t
 t/calc.t
+t/stress.t

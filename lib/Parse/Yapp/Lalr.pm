@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Lalr
 #
-# (c) Copyright 1998-2000 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-2001 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Lalr;
@@ -598,17 +598,29 @@ sub _SetFirst {
 }
 
 sub _Preds {
-    my($states,$stateno,$len,$preds)=@_;
+    my($states,$stateno,$len)=@_;
+    my($queue, $preds);
 
-    if($len) {
-        for (@{$$states[$stateno]{FROM}}) {
-            _Preds($states,$_,$len-1,$preds);
-        }
+        $len
+    or  return [ $stateno ];
+
+    $queue=[ [ $stateno, $len ] ];
+    while(@$queue) {
+        my($pred) = shift(@$queue);
+        my($stateno, $len) = @$pred;
+
+            $len == 1
+        and do {
+			push(@$preds,@{$states->[$stateno]{FROM}});
+            next;
+        };
+
+        push(@$queue, map { [ $_, $len - 1 ] }
+					  @{$states->[$stateno]{FROM}});
     }
-    else {
-        ++$$preds{$stateno};
-    }
-    $preds;
+
+    # Pass @$preds through a hash to ensure unicity
+    [ keys( %{ +{ map { ($_,1) } @$preds } } ) ];
 }
 
 sub _FirstSfx {
@@ -672,7 +684,7 @@ sub _ComputeFollows {
 			for my $ruleno (@{$$state{ACTIONS}{''}}) {
 				my($lhs,$rhs)=@{$$grammar{RULES}[$ruleno]}[0,1];
 
-                for my $predno (keys(%{_Preds($states,$stateno,scalar(@$rhs),{})})) {
+                for my $predno (@{_Preds($states,$stateno,scalar(@$rhs))}) {
                     ++$rel->{"$stateno.$ruleno"}{"$predno.$lhs"};
                 }
 			}
@@ -704,7 +716,7 @@ sub _ComputeFollows {
 
                     vec($follows->{$goto},0,1)=0;
 
-                    for my $predno (keys(%{_Preds($states,$stateno,$pos-1,{})})) {
+                    for my $predno (@{_Preds($states,$stateno,$pos-1)}) {
                         ++$rel->{$goto}{"$predno.$lhs"};
                     }
                 };

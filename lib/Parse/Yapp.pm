@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp.pm.
 #
-# Copyright (c) 1998-2000, Francois Desarmenien, all right reserved.
+# Copyright (c) 1998-2001, Francois Desarmenien, all right reserved.
 #
 # See the Copyright section at the end of the Parse/Yapp.pm pod section
 # for usage and distribution rights.
@@ -66,12 +66,12 @@ up to the end of line, or C style, enclosed between  I</*> and I<*/>.
 
 
 Through all the grammar files, two kind of symbols may appear:
-I<Non-terminals> symbols, also called I<left-hand-side> symbols,
-which are the names of your rules, and I<Terminal> symbols, also
-called I<Tokens>.
+I<Non-terminal> symbols, called also I<left-hand-side> symbols,
+which are the names of your rules, and I<Terminal> symbols, called
+also I<Tokens>.
 
-Tokens are the symbols your lexer function will pass to your parser
-(see below). They come in two flavours: symbolic tokens and string
+Tokens are the symbols your lexer function will feed your parser with
+(see below). They are of two flavours: symbolic tokens and string
 literals.
 
 Non-terminals and symbolic tokens share the same identifier syntax:
@@ -80,24 +80,24 @@ Non-terminals and symbolic tokens share the same identifier syntax:
 
 String literals are enclosed in single quotes and can contain almost
 anything. They will be output to your parser file double-quoted, making
-any special character be as is. '"', '$' and '@' will be automatically
+any special character as such. '"', '$' and '@' will be automatically
 quoted with '\', making their writing more natural. On the other hand,
 if you need a single quote inside your literal, just quote it with '\'.
 
 You cannot have a literal I<'error'> in your grammar as it would
 confuse the driver with the I<error> token. Use a symbolic token instead.
-Using it anyway will produce a warning telling you you should have wrote
-it I<error> and will treat it as if it were the I<error> token. Actually,
-it's certainly NOT what you want.
+In case you inadvertently use it, this will produce a warning telling you
+you should have written it I<error> and will treat it as if it were the
+I<error> token, which is certainly NOT what you meant.
 
 
 =item C<Grammar file syntax>
 
-It is very close to yacc's one (in fact, I<Parse::Yapp> should compile
-a clean I<yacc> grammar without any modification, whereas the opposit
-is no true).
+It is very close to yacc syntax (in fact, I<Parse::Yapp> should compile
+a clean I<yacc> grammar without any modification, whereas the opposite
+is not true).
 
-It is divided in three sections separated by C<%%>:
+This file is divided in three sections, separated by C<%%>:
 
 	header section
 	%%
@@ -107,31 +107,31 @@ It is divided in three sections separated by C<%%>:
 
 =over 4
 
-=item B<The Header Section> section may contain:
+=item B<The Header Section> section may optionally contain:
 
 =item *
 
-One ore more code blocks enclosed inside C<%{> and C<%}> just like in
+One or more code blocks enclosed inside C<%{> and C<%}> just like in
 yacc. They may contain any valid Perl code and will be copied verbatim
 at the very beginning of the parser module. They are not as useful as
-they are in yacc, but you may use them, for example, for global variables
-declaration, though you will see later that such global variables can
-avoided to make reentrant parser modules.
+they are in yacc, but you can use them, for example, for global variable
+declarations, though you will notice later that such global variables can
+be avoided to make a reentrant parser module.
 
 =item *
 
 Precedence declarations, introduced by C<%left>, C<%right> and C<%nonassoc>
 specifying associativity, followed by the list of tokens or litterals
 having the same precedence and associativity.
-The precedence beeing the later declared have the highest level.
+The precedence beeing the latter declared will be having the highest level.
 (see the yacc or bison manuals for a full explanation of how they work,
 as they are implemented exactly the same way in Parse::Yapp)
 
 =item *
 
 C<%start> followed by a rule's left hand side, declaring this rule to
-be the starting rule of your grammar. The default if C<%start> is not
-declared is the first rule in your grammar section.
+be the starting rule of your grammar. The default, when C<%start> is not
+used, is the first rule in your grammar section.
 
 =item *
 
@@ -166,11 +166,11 @@ A right hand side may be empty:
         ;
 
 (if you have more than one empty rhs, Parse::Yapp will issue a warning,
-as this is usually a mistake, and you sure will have a reduce/reduce
+as this is usually a mistake, and you will certainly have a reduce/reduce
 conflict)
 
 
-A rhs may be followed by an optionnal C<%prec> directive, followed
+A rhs may be followed by an optional C<%prec> directive, followed
 by a token, giving the rule an explicit precedence (see yacc manuals
 for its precise meaning) and optionnal semantic action code block (see
 below).
@@ -204,15 +204,19 @@ in C: inside strings they don't need to match. While in C it is
 very easy to detect the beginning of a string construct, or a
 single character, it is much more difficult in Perl, as there
 are so many ways of writing such literals. So there is no check
-for that today. If you need a brace in a string, quote it (C<\{> or
-C<\}>) that should work. Or (weird) make a comment matching it. Sorry.
+for that today. If you need a brace in a double-quoted string, just
+quote it (C<\{> or C<\}>). For single-quoted strings, you will need
+to make a comment matching it I<in th right order>.
+Sorry for the inconvenience.
 
     {
         "{ My string block }".
         "\{ My other string block \}".
         qq/ My unmatched brace \} /.
-        #Force the match: {
-        q/  My last brace } /
+        # Force the match: {
+        q/ for my closing brace } /
+        q/ My opening brace { /
+        # must be closed: }
     }
 
 All of these constructs should work.
@@ -246,9 +250,9 @@ Four useful methods in error recovery sub
 
 return respectivly the current input token that made the parse fail,
 its semantic value (both can be used to modify their values too, but
-know what you do ! See I<Error reporting routine> section for an example),
-a list which contains the tokens the parser expected when the failure
-occured and a reference to the lexer routine.
+I<know what you are doing> ! See I<Error reporting routine> section for
+an example), a list which contains the tokens the parser expected when
+the failure occured and a reference to the lexer routine.
 
 Note that if C<$_[0]-E<gt>YYCurtok> is declared as a C<%nonassoc> token,
 it can be included in C<$_[0]-E<gt>YYExpect> list whenever the input
@@ -268,18 +272,18 @@ through the method
 
     $_[0]->YYSemval( index )
 
-where index is an integer. Its value beeing I<1 .. n> returns the same values
+where index is an integer. Its value being I<1 .. n> returns the same values
 than I<$_[1] .. $_[n]>, but I<-n .. 0> returns values on the left of the rule
 beeing reduced (It is related to I<$-n .. $0 .. $n> in yacc, but you
 cannot use I<$_[0]> or I<$_[-n]> constructs in Parse::Yapp for obvious reasons)
 
 
-There is also a provision for user data area in the parser object,
+There is also a provision for a user data area in the parser object,
 accessed by the method:
 
     $_[0]->YYData
 
-which returns a reference to an anonymous hash, letting you have
+which returns a reference to an anonymous hash, which let you have
 all of your parsing data held inside the object (see the Calc.yp
 or ParseYapp.yp files in the distribution for some examples).
 That's how you can make you parser module reentrant: all of your
@@ -299,11 +303,11 @@ action is run, which returns the first parameter:
 
 =item C<In rule actions>
 
-It is also possible to embbed semantic actions inside of a rule:
+It is also possible to embed semantic actions inside of a rule:
 
     typedef:    TYPE { $type = $_[1] } identlist { ... } ;
 
-When the Parse::Yapp's parser encounter such an embeded action, it modifies
+When the Parse::Yapp's parser encounter such an embedded action, it modifies
 the grammar as if you wrote (although @x-1 is not a legal lhs value):
 
     @x-1:   /* empty */ { $type = $_[1] };
@@ -345,11 +349,10 @@ data area.
 
 It is its duty to return the next token and value to the parser.
 They C<must> be returned as a list of two variables, the first one
-beeing the token known by the parser (symbolic or literal), and the
-second one beeing anything you want (usualy the text of the next
-token, or the literal value) from a simple scalar value to any
-complex reference, as the parsing driver never use it but to call
-semantic actions:
+is the token known by the parser (symbolic or literal), the second
+one beeing anything you want (usualy the content of the token, or the
+literal value) from a simple scalar value to any complex reference,
+as the parsing driver never use it but to call semantic actions:
 
     ( 'NUMBER', $num )
 or
@@ -366,9 +369,9 @@ Note that your lexer should I<never> return C<'error'> as token
 value: for the driver, this is the error token used for error
 recovery and would lead to odd reactions.
 
-You now have your lexer written, maybe you will need to output
-meaningful error messages, instead of the default which is to
-print 'Parse error.' on STDERR.
+Now that you have your lexer written, maybe you will need to output
+meaningful error messages, instead of the default which is to print
+'Parse error.' on STDERR.
 
 So you will need an Error reporting sub.
 
@@ -378,12 +381,12 @@ If you want one, write it knowing that it is passed as parameter
 the parser object. So you can share information whith the lexer
 routine quite easily.
 
-You can also use the C<$_[0]->YYErrok> method in it, which will
-resume parsing as if no error occured. Of course, as the invalid
+You can also use the C<$_[0]-E<gt>YYErrok> method in it, which will
+resume parsing as if no error occured. Of course, since the invalid
 token is still invalid, you're supposed to fix the problem by
 yourself.
 
-The method C<$_[0]->YYLexer> may help you, as it returns a reference
+The method C<$_[0]-E<gt>YYLexer> may help you, as it returns a reference
 to the lexer routine, and can be called as
 
     ($tok,$val)=&{$_[0]->Lexer}
@@ -481,7 +484,7 @@ the C<-n> switch.
 
 =head1 BUGS AND SUGGESTIONS
 
-If you find any bug, think of anything that could improve Parse::Yapp
+If you find bugs, think of anything that could improve Parse::Yapp
 or have any questions related to it, feel free to contact the author.
 
 =head1 AUTHOR
@@ -495,7 +498,7 @@ yapp(1) perl(1) yacc(1) bison(1).
 =head1 COPYRIGHT
 
 The Parse::Yapp module and its related modules and shell scripts are copyright
-(c) 1998-1999 Francois Desarmenien, France. All rights reserved.
+(c) 1998-2001 Francois Desarmenien, France. All rights reserved.
 
 You may use and distribute them under the terms of either
 the GNU General Public License or the Artistic License,

@@ -1,6 +1,6 @@
 ####################################################################
 #
-#    This file was generated using Parse::Yapp version 1.03.
+#    This file was generated using Parse::Yapp version 1.04.
 #
 #        Don't edit this file, use source file instead.
 #
@@ -15,7 +15,7 @@ use strict;
 use Parse::Yapp::Driver;
 
 #line 1 "YappParse.yp"
-# (c) Copyright Francois Desarmenien 1998-2000, all rights reserved.
+# (c) Copyright Francois Desarmenien 1998-2001, all rights reserved.
 # (see COPYRIGHT in Parse::Yapp.pm pod section for use and distribution rights)
 #
 # Parse/Yapp/Parser.yp: Parse::Yapp::Parser.pm source file
@@ -41,7 +41,7 @@ sub new {
         ref($class)
     and $class=ref($class);
 
-    my($self)=$class->SUPER::new( yyversion => '1.03',
+    my($self)=$class->SUPER::new( yyversion => '1.04',
                                   yystates =>
 [
 	{#State 0

@@ -1,7 +1,7 @@
 #
 # Module Parse::Yapp::Output
 #
-# (c) Copyright 1998-2000 Francois Desarmenien, all rights reserved.
+# (c) Copyright 1998-2001 Francois Desarmenien, all rights reserved.
 # (see the pod text in Parse::Yapp module for use and distribution rights)
 #
 package Parse::Yapp::Output;
